@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Input Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        .chart-container {
+            width: 80%;
+            max-width: 900px;
+            margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        canvas {
+            width: 100% !important;  /* Make canvas take full width */
+            height: 400px !important; /* Fixed height for better visibility */
+        }
+        @media (max-width: 768px) {
+            canvas {
+                height: 300px !important; /* Responsive height on smaller screens */
+            }
+        }
+        .chart-title {
+            font-size: 1.5em;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>User Input Chart</h1>
+    
+    <div class="chart-container">
+        <h2 class="chart-title">Cumulative User Input Score Over Time</h2>
+        <canvas id="lineChart"></canvas>
+    </div>
+    
+    <div class="chart-container">
+        <h2 class="chart-title">Individual User Inputs Count</h2>
+        <canvas id="barChart"></canvas>
+    </div>
+    
+    <script>
+        // Line Chart
+        const ctxLine = document.getElementById('lineChart').getContext('2d');
+        const lineData = {
+            labels: {{ line_chart_data.labels|safe }},
+            datasets: [{
+                label: 'Cumulative User Input Score',
+                data: {{ line_chart_data.cumulative_score|safe }},
+                borderColor: 'rgba(54, 162, 235, 1)', // More vibrant color
+                backgroundColor: 'rgba(54, 162, 235, 0.2)', // Light background for line
+                fill: true,  // Fill the area under the line
+                tension: 0.4, // Smooth curve
+                borderWidth: 2,
+                pointRadius: 3,
+            }]
+        };
+
+        const myLineChart = new Chart(ctxLine, {
+            type: 'line',
+            data: lineData,
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Cumulative Score',
+                            font: {
+                                size: 16,
+                                weight: 'bold',
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(200, 200, 200, 0.5)',
+                        },
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date',
+                            font: {
+                                size: 16,
+                                weight: 'bold',
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(200, 200, 200, 0.5)',
+                        },
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            font: {
+                                size: 14,
+                                weight: 'bold',
+                            }
+                        }
+                    },
+                }
+            }
+        });
+
+        // Bar Chart
+        const ctxBar = document.getElementById('barChart').getContext('2d');
+        const barData = {
+            labels: {{ bar_chart_data.labels|safe }},
+            datasets: [{
+                label: 'User Input Counts',
+                data: {{ bar_chart_data.values|safe }},
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.5)', // Read Bible
+                    'rgba(255, 206, 86, 0.5)', // Prayed
+                    'rgba(255, 99, 132, 0.5)', // Exercised
+                    'rgba(54, 162, 235, 0.5)', // Satisfied
+                    'rgba(255, 99, 71, 0.5)',   // Hurt Someone
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 99, 71, 1)',
+                ],
+                borderWidth: 2,
+                borderRadius: 10 // Add rounded corners to bars
+            }]
+        };
+
+        const myBarChart = new Chart(ctxBar, {
+            type: 'bar',
+            data: barData,
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Count',
+                            font: {
+                                size: 16,
+                                weight: 'bold',
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(200, 200, 200, 0.5)',
+                        },
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'User Inputs',
+                            font: {
+                                size: 16,
+                                weight: 'bold',
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(200, 200, 200, 0.5)',
+                        },
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            font: {
+                                size: 14,
+                                weight: 'bold',
+                            }
+                        }
+                    },
+                }
+            }
+        });
+    </script>
+</body>
+</html>
