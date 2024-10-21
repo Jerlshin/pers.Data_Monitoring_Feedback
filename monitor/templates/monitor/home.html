@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    {% load static %} <!-- Load static files -->
+    <style>
+        /* Overall body styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('{% static "images/login_page_bg.jpg" %}'); /* Background image */
+            background-size: cover; /* Cover entire viewport */
+            background-position: center; /* Center the image */
+            padding: 20px;
+            color: #333; /* Dark text for readability */
+        }
+        /* Container for the main content */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px; /* Increased padding for a more spacious look */
+            background-color: rgba(255, 255, 255, 0.8); /* Slightly transparent white background for content */
+            border-radius: 8px; /* Rounded corners for a softer appearance */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Enhanced shadow for depth */
+            text-align: center;
+        }
+        /* Base button styles */
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px; /* Slightly rounded corners */
+            margin: 10px;
+            cursor: pointer;
+            font-weight: bold; /* Bold text for emphasis */
+            font-size: 1rem; /* Consistent font size */
+            transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s; /* Smooth transition effects */
+        }
+        /* Primary button styles with gradient */
+        .primary-button {
+            background: linear-gradient(90deg, #007bff, #0056b3); /* Gradient for primary button */
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.5); /* Shadow for depth */
+        }
+        .primary-button:hover {
+            background: linear-gradient(90deg, #0056b3, #004085); /* Darker gradient on hover */
+            transform: translateY(-2px); /* Slight lift effect */
+        }
+        /* Secondary button styles with gradient */
+        .secondary-button {
+            background: linear-gradient(90deg, #6c757d, #5a6268); /* Gradient for secondary button */
+            color: white;
+            box-shadow: 0 4px 10px rgba(108, 117, 125, 0.5); /* Shadow for depth */
+        }
+        .secondary-button:hover {
+            background: linear-gradient(90deg, #5a6268, #4e555b); /* Darker gradient on hover */
+            transform: translateY(-2px); /* Slight lift effect */
+        }
+        /* Logout button specific styles */
+        .logout-button {
+            background-color: #e74c3c; /* Logout button color */
+            color: white;
+            border-radius: 20px; /* More rounded corners for logout button */
+            font-weight: bold; /* Bold text for emphasis */
+        }
+        .logout-button:hover {
+            background-color: #c0392b; /* Darker shade on hover */
+            transform: translateY(-2px); /* Slight lift effect */
+            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.5); /* Shadow for depth */
+        }
+        /* Download button styles */
+        #download-btn {
+            background: linear-gradient(90deg, #28a745, #218838);  /* Green gradient */
+            color: white;
+            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.5);
+        }
+        #download-btn:hover {
+            background: linear-gradient(90deg, #218838, #1e7e34); /* Darker green on hover */
+            transform: translateY(-2px);
+        }
+        /* Quotes section styles */
+        .quotes-section {
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px; /* Space between quotes */
+        }
+        /* Individual quote card styles */
+        .quote-card {
+            background-color: rgba(231, 243, 254, 0.9); /* Slightly transparent light blue background for quotes */
+            border-left: 5px solid #007bff; /* Distinct left border */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s; /* Animation for hover effect */
+        }
+        .quote-card:hover {
+            transform: scale(1.02); /* Slightly enlarge on hover */
+        }
+        .quote-text {
+            font-style: italic; /* Italicized text for quotes */
+            color: #555; /* Slightly muted text color */
+            margin: 0;
+        }
+        /* Responsive design considerations */
+        @media (max-width: 600px) {
+            button {
+                width: 100%; /* Full width buttons on smaller screens */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome, {{ user.username }}</h1>
+
+        <button class="primary-button" onclick="window.location.href='{% url 'input' %}'">Go to Input Page</button>
+        <button class="secondary-button" onclick="window.location.href='{% url 'chart' %}'">Go to Chart Page</button>
+
+        <!-- Download Button with Confirmation Dialog -->
+        <button class="primary-button" id="download-btn">Download Excel</button>
+
+        <br>
+        <!-- Logout Button -->
+        <button class="logout-button" onclick="window.location.href='{% url 'logout' %}'">Logout</button>
+    </div>
+
+    <!-- Quotes Section -->
+    <div class="quotes-section">
+        <div class="quote-card">
+            <p class="quote-text">"The only way to do great work is to love what you do."</p>
+        </div>
+        <div class="quote-card">
+            <p class="quote-text">"Discipline is the bridge between goals and accomplishment."</p>
+        </div>
+        <div class="quote-card">
+            <p class="quote-text">"Success is not the key to happiness. Happiness is the key to success. If you love what you are doing, you will be successful."</p>
+        </div>
+        <div class="quote-card">
+            <p class="quote-text">"Your life does not get better by chance, it gets better by change."</p>
+        </div>
+        <div class="quote-card">
+            <p class="quote-text">"Believe you can and you're halfway there."</p>
+        </div>
+        <div class="quote-card">
+            <p class="quote-text">"For I know the plans I have for you, plans to prosper you and not to harm you, plans to give you hope and a future."</p>
+        </div>
+        <div class="quote-card">
+            <p class="quote-text">"I can do all things through Christ who strengthens me."</p>
+        </div>
+        <div class="quote-card">
+            <p class="quote-text">"Trust in the Lord with all your heart and lean not on your own understanding."</p>
+        </div>
+        <div class="quote-card">
+            <p class="quote-text">"And we know that in all things God works for the good of those who love him."</p>
+        </div>
+        <div class="quote-card">
+            <p class="quote-text">"The Lord is my shepherd; I shall not want."</p>
+        </div>
+    </div>
+
+    <!-- JavaScript to handle confirmation dialog -->
+    <script>
+        document.getElementById("download-btn").addEventListener("click", function() {
+            if (confirm("Are you sure you want to download the Excel file with all inputs?")) {
+                window.location.href = "{% url 'download_excel' %}";
+            }
+        });
+    </script>
+</body>
+</html>

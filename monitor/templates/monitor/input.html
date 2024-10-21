@@ -5,20 +5,216 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Input</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"> <!-- Updated font -->
+    <style>
+        body {
+            background: url('https://www.transparenttextures.com/patterns/light-sand.png'); /* Subtle background texture */
+            font-family: 'Roboto', sans-serif; /* Updated to Roboto font */
+            background-color: #f1f3f5; /* Fallback color */
+            background-blend-mode: overlay; /* Blend mode for better readability */
+            padding: 20px; /* Padding for body */
+        }
+        .container {
+            max-width: 600px; /* Limit the width of the form */
+            margin-top: 50px; /* Space from the top of the page */
+            padding: 30px;
+            border-radius: 10px; /* Rounded corners for the container */
+            background-color: #ffffff; /* White background for the form */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Enhanced shadow for depth */
+        }
+        .love-header {
+            font-family: 'Great Vibes', cursive; /* Romantic font */
+            font-size: 2.5rem; /* Size for the love header */
+            color: #e63946; /* Romantic red color */
+            text-align: center; /* Center the love header */
+            margin-bottom: 20px; /* Space below the love header */
+        }
+        h1 {
+            font-size: 2.5rem; /* Larger title for emphasis */
+            margin-bottom: 20px; /* Space below the title */
+            color: #343a40; /* Dark color for better readability */
+            text-align: center; /* Center the title */
+            font-family: 'Roboto', sans-serif; /* Professional font */
+            font-weight: 700; /* Bold font for the title */
+        }
+        .form-check-label {
+            font-weight: 500; /* Medium weight for labels */
+            color: #495057; /* Darker label color */
+        }
+        .btn {
+            font-size: 1rem; /* Consistent button font size */
+            padding: 12px 30px; /* Padding for buttons */
+            border-radius: 25px; /* Rounded buttons */
+            font-weight: 700; /* Bold button text */
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+        .btn-primary {
+            background-color: #007bff; /* Primary button color */
+            border: none; /* No border */
+        }
+        .btn-primary:hover {
+            background-color: #0056b3; /* Darker shade on hover */
+        }
+        .btn-secondary {
+            background-color: #6c757d; /* Secondary button color */
+            border: none; /* No border */
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268; /* Darker shade on hover */
+        }
+        textarea {
+            resize: none; /* Disable resizing */
+        }
+        /* Logout Button Styles */
+        .logout-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: 700; /* Bold text for logout */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .logout-button:hover {
+            background-color: #c0392b;
+        }
+        .logout-button:active {
+            transform: translateY(2px); /* Button press effect */
+        }
+        /* Home Button Styles */
+        .home-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: 700; /* Bold text for home */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .home-button:hover {
+            background-color: #0056b3;
+        }
+        .home-button:active {
+            transform: translateY(2px); /* Button press effect */
+        }
+        /* Quote Styles */
+        .quote-section {
+            margin-top: 30px; /* Space above the quote */
+            padding: 20px;
+            background-color: #f0fff0; /* Light green background */
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+            text-align: center; /* Center the quote */
+        }
+        .peace-quote {
+            font-family: 'Roboto', sans-serif; /* Peaceful font */
+            font-size: 1.5rem; /* Larger font size for quotes */
+            color: #4CAF50; /* Green color */
+            margin: 0; /* Remove margin for better alignment */
+        }
+        .quote-author {
+            font-family: 'Roboto', sans-serif; /* Same peaceful font for consistency */
+            font-size: 1.2rem; /* Slightly smaller font size for author */
+            color: #333; /* Darker color for author */
+            margin-top: 5px; /* Space above author */
+        }
+        /* Additional Quote Styles */
+        .additional-quote {
+            margin-top: 20px; /* Space above the additional quote */
+            font-family: 'Roboto', sans-serif; /* Consistent font */
+            font-size: 1.5rem; /* Font size */
+            color: #555; /* Color for the quote */
+            text-align: center; /* Center align the quote */
+            padding: 10px; /* Padding for better spacing */
+            opacity: 0; /* Start as invisible */
+            animation: slideIn 1s forwards; /* Slide-in effect */
+            animation-delay: 0.5s; /* Delay before slide-in starts */
+        }
+        @keyframes slideIn {
+            0% {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <h1 class="text-center">User Monitoring Form</h1>
+    <!-- Home Button -->
+    <button class="home-button" onclick="window.location.href='{% url 'home' %}'">Home</button>
+    <!-- Logout Button -->
+    <button class="logout-button" onclick="window.location.href='{% url 'logout' %}'">Logout</button>
+
+    <div class="love-header">Spread Love and Happiness</div> <!-- New love header -->
+
+    <div class="container">
+        <h1>User Monitoring Form</h1>
+        <p class="text-center text-muted"><strong>Date:</strong> {{ current_date }}</p>  <!-- Display current date here -->
         <form method="post">
             {% csrf_token %}
             <div class="form-group">
-                {{ form.as_p|safe }}
+                <h5>Activities:</h5>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="readBible" name="read_bible">
+                    <label class="form-check-label" for="readBible">Read Bible</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="prayed" name="prayed">
+                    <label class="form-check-label" for="prayed">Prayed</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="exercised" name="exercised">
+                    <label class="form-check-label" for="exercised">Exercised</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="satisfied" name="satisfied">
+                    <label class="form-check-label" for="satisfied">Satisfied</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="hurtSomeone" name="hurt_someone">
+                    <label class="form-check-label" for="hurtSomeone">Hurt Someone</label>
+                </div>
             </div>
-            <div class="text-center">
+            <div class="form-group">
+                <label for="lovedSomeone">Name of Someone You Loved Most Today:</label>
+                <input type="text" class="form-control" id="lovedSomeone" name="loved_someone" maxlength="100" placeholder="Enter name" required>
+            </div>
+            <div class="form-group">
+                <label for="somethingNice">Something Nice You Did Today:</label>
+                <textarea class="form-control" id="somethingNice" name="something_nice" rows="3" placeholder="Share a brief summary of your day..." required></textarea>
+            </div>
+            
+            <div class="d-flex justify-content-center mt-4">
                 <button type="submit" class="btn btn-primary">Submit</button>
-                <a href="{% url 'chart_view' %}" class="btn btn-secondary ml-2">View Chart</a>
+                <button type="button" class="btn btn-secondary ml-3" onclick="window.location.href='{% url 'chart' %}'">View Chart</button>
             </div>
+
         </form>
+
+        <div class="quote-section">
+            <p class="peace-quote">"Peace is not the absence of conflict, but the presence of God."</p> <!-- First quote inside the card -->
+        </div>
     </div>
+    
+    <div class="additional-quote">"Peace is not the absence of conflict, but the presence of God."</div> <!-- Second quote outside the card -->
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

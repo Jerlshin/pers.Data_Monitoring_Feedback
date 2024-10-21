@@ -1,7 +1,12 @@
 from django.urls import path
-from .views import input_view, chart_view
+from . import views
 
 urlpatterns = [
-    path('', input_view, name='input_view'),
-    path('chart/', chart_view, name='chart_view'),
+    path('', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    path('home/', views.home_view, name='home'),
+    path('input/', views.input_view, name='input'),
+    path('chart/', views.chart_view, name='chart'),
+    path('download_excel/', views.export_to_excel_view, name='download_excel'),  # URL mapping for downloading Excel
+
 ]

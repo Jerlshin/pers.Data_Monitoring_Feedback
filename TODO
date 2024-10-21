@@ -1,0 +1,24 @@
+Weighted values in graph
+Should be able to delete the database
+Should be able to download the database as Excel sheet 
+
+
+
+/* Additional Quote Styles */
+        .additional-quote {
+            margin-top: 20px; /* Space above the additional quote */
+            font-family: 'Roboto', sans-serif; /* Consistent font */
+            font-size: 1.5rem; /* Font size */
+            color: #555; /* Color for the quote */
+            text-align: center; /* Center align the quote */
+            padding: 10px; /* Padding for better spacing */
+            opacity: 0; /* Start as invisible */
+            animation: fadeIn 1s forwards; /* Fade-in effect */
+            animation-delay: 0.5s; /* Delay before fade-in starts */
+        }
+
+<!-- Additional Quote Section -->
+    <div class="additional-quote">
+        <p>"Love is not about how many days, months, or years you have been together. Love is about how much you love each other every single day."</p>
+    </div>
+
