@@ -36,19 +36,46 @@
             font-size: 0.875rem;
         }
         .container {
-            max-width: 600px; /* Limit the width of the form */
-            margin-top: 50px; /* Space from the top of the page */
+            max-width: 700px;
+            margin-top: 50px;
             padding: 30px;
-            border-radius: 10px; /* Rounded corners for the container */
-            background-color: #ffffff; /* White background for the form */
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Enhanced shadow for depth */
+            border-radius: 10px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
         .love-header {
-            font-family: 'Great Vibes', cursive; /* Romantic font */
-            font-size: 2.5rem; /* Size for the love header */
-            color: #e63946; /* Romantic red color */
-            text-align: center; /* Center the love header */
-            margin-bottom: 20px; /* Space below the love header */
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.5rem;
+            color: #e63946;
+            text-align: center;
+            margin-bottom: 5px;
+            animation: slideDown 1s ease-in-out;
+        }
+        @keyframes slideDown {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .and-text {
+            font-size: 15px; /* Smaller font size for "and" */
+            margin: 0; /* Remove default margin */
+            line-height: 0; /* Adjust line height if necessary */
+            margin-bottom: 5px; 
         }
         h1 {
             font-size: 2.5rem; /* Larger title for emphasis */
@@ -75,6 +102,7 @@
         }
         .btn-primary:hover {
             background-color: #0056b3; /* Darker shade on hover */
+            transform: scale(1.05); 
         }
         .btn-secondary {
             background-color: #6c757d; /* Secondary button color */
@@ -82,6 +110,7 @@
         }
         .btn-secondary:hover {
             background-color: #5a6268; /* Darker shade on hover */
+            transform: scale(1.05); 
         }
         textarea {
             resize: none; /* Disable resizing */
@@ -176,103 +205,117 @@
     </style>
 </head>
 <body>
-    <!-- Home Button -->
     <button class="home-button" onclick="window.location.href='{% url 'home' %}'">Home</button>
-    <!-- Logout Button -->
     <button class="logout-button" onclick="window.location.href='{% url 'logout' %}'">Logout</button>
 
-    <div class="love-header">Spread Love and Happiness</div> <!-- New love header -->
+    <div class="love-header">
+        Spread Love 💖 and Happiness
+    </div>
 
     <div class="container">
         <h1>User Monitoring Form</h1>
-        <p class="text-center text-muted"><strong>Date:</strong> {{ current_date }}</p>  <!-- Display current date here -->
+        <p class="text-center text-muted"><strong>Date:</strong> {{ current_date }}</p>
         <form method="post">
             {% csrf_token %}
             
             <h5>Activities:</h5>
-        
+
+            <!-- Checkbox Activities -->
             <div class="form-check">
                 {{ form.read_bible }}
                 <label class="form-check-label" for="{{ form.read_bible.id_for_label }}">Bible Reading</label>
             </div>
-        
             <div class="form-check">
                 {{ form.prayer_god }}
                 <label class="form-check-label" for="{{ form.prayer_god.id_for_label }}">Prayer for World Peace and Personal Necessities</label>
             </div>
-        
             <div class="form-check">
                 {{ form.exercised_or_played }}
                 <label class="form-check-label" for="{{ form.exercised_or_played.id_for_label }}">Exercise or Playing</label>
             </div>
-        
             <div class="form-check">
                 {{ form.book_reading }}
                 <label class="form-check-label" for="{{ form.book_reading.id_for_label }}">Book Reading</label>
             </div>
-        
-            <div class="form-check">
+            <div class="form-check">    
                 {{ form.studying_machine_learning }}
                 <label class="form-check-label" for="{{ form.studying_machine_learning.id_for_label }}">Studying Machine Learning</label>
             </div>
-        
             <div class="form-check">
                 {{ form.cultivated_relationships }}
                 <label class="form-check-label" for="{{ form.cultivated_relationships.id_for_label }}">Cultivating Good Relationship</label>
             </div>
-        
             <div class="form-check">
                 {{ form.woke_up_at_5am }}
                 <label class="form-check-label" for="{{ form.woke_up_at_5am.id_for_label }}">Woke up at 5.00 AM</label>
             </div>
-        
             <div class="form-check">
                 {{ form.healthy_eating }}
                 <label class="form-check-label" for="{{ form.healthy_eating.id_for_label }}">Healthy Eating</label>
             </div>
-        
             <div class="form-check">
                 {{ form.hurt_someone }}
                 <label class="form-check-label" for="{{ form.hurt_someone.id_for_label }}">Hurt Someone</label>
             </div>
-        
             <div class="form-check">
                 {{ form.maintained_purity }}
                 <label class="form-check-label" for="{{ form.maintained_purity.id_for_label }}">Maintained Purity</label>
             </div>
-        
             <div class="form-check">
                 {{ form.wasted_time }}
                 <label class="form-check-label" for="{{ form.wasted_time.id_for_label }}">Wasted Time</label>
             </div>
-        
+
+            
+            <!-- Select All and Clear All Buttons 
+            <div class="d-flex justify-content-between mb-3">
+                <button type="button" class="btn btn-outline-secondary" onclick="selectAll()">Select All</button>
+                <button type="button" class="btn btn-outline-secondary" onclick="clearAll()">Clear All</button>
+            </div>
+
+            -->
+            
+            <!-- Other form fields -->
             <div class="form-group mt-4">
                 <label for="{{ form.loved_someone.id_for_label }}">Name of Someone You Loved Most Today:</label>
                 {{ form.loved_someone }}
             </div>
-        
             <div class="form-group">
                 <label for="{{ form.daily_summary.id_for_label }}">Something Nice You Did Today:</label>
                 {{ form.daily_summary }}
             </div>
-        
+
+
             <div class="d-flex justify-content-center mt-4">
                 <button type="submit" class="btn btn-primary">Submit</button>
-                <button type="button" class="btn btn-secondary ms-3" onclick="window.location.href='{% url 'chart' %}'">View Chart</button>
+                <button type="button" class="btn btn-secondary" style="margin-left: 50px;" onclick="window.location.href='{% url 'chart' %}'">View Chart</button>
             </div>
+            
         </form>
-        
-        
 
         <div class="quote-section">
-            <p class="peace-quote">"Peace is not the absence of conflict, but the presence of God."</p> <!-- First quote inside the card -->
+            <p class="peace-quote">"Peace is not the absence of conflict, but the presence of God."</p>
         </div>
     </div>
     
-    <div class="additional-quote">"Peace is not the absence of conflict, but the presence of God."</div> <!-- Second quote outside the card -->
+    <div class="additional-quote">"The best way to find yourself is to lose yourself in the service of others."</div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Select All Checkboxes
+        function selectAll() {
+            document.querySelectorAll('.form-check-input').forEach((checkbox) => {
+                checkbox.checked = true;
+            });
+        }
+
+        // Clear All Checkboxes
+        function clearAll() {
+            document.querySelectorAll('.form-check-input').forEach((checkbox) => {
+                checkbox.checked = false;
+            });
+        }
+    </script>
 </body>
-</html>
