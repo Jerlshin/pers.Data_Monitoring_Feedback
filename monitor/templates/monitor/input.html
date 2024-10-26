@@ -202,6 +202,15 @@
                 opacity: 1;
             }
         }
+        .toggle-select-button {
+            font-size: 1rem;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 700;
+            transition: background-color 0.3s ease;
+            margin-bottom: 20px;
+            float: right;
+        }
     </style>
 </head>
 <body>
@@ -267,13 +276,8 @@
             </div>
 
             
-            <!-- Select All and Clear All Buttons 
-            <div class="d-flex justify-content-between mb-3">
-                <button type="button" class="btn btn-outline-secondary" onclick="selectAll()">Select All</button>
-                <button type="button" class="btn btn-outline-secondary" onclick="clearAll()">Clear All</button>
-            </div>
+            <button type="button" id="toggleSelectButton" class="btn btn-outline-secondary toggle-select-button" onclick="toggleSelectAll()">Select All</button>
 
-            -->
             
             <!-- Other form fields -->
             <div class="form-group mt-4">
@@ -304,18 +308,19 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-        // Select All Checkboxes
-        function selectAll() {
-            document.querySelectorAll('.form-check-input').forEach((checkbox) => {
-                checkbox.checked = true;
-            });
-        }
+        // Function to toggle between "Select All" and "Clear All"
+        function toggleSelectAll() {
+            const checkboxes = document.querySelectorAll('.form-check-input');
+            const button = document.getElementById('toggleSelectButton');
+            const allSelected = Array.from(checkboxes).every(checkbox => checkbox.checked);
 
-        // Clear All Checkboxes
-        function clearAll() {
-            document.querySelectorAll('.form-check-input').forEach((checkbox) => {
-                checkbox.checked = false;
-            });
+            if (allSelected) {
+                checkboxes.forEach(checkbox => checkbox.checked = false);
+                button.innerText = "Select All";
+            } else {
+                checkboxes.forEach(checkbox => checkbox.checked = true);
+                button.innerText = "Clear All";
+            }
         }
     </script>
 </body>
