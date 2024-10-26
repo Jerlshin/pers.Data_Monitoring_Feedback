@@ -14,6 +14,27 @@
             background-blend-mode: overlay; /* Blend mode for better readability */
             padding: 20px; /* Padding for body */
         }
+        /* Add these to your existing style section */
+        .form-control {
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            padding: 10px;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .form-check-input {
+            margin-top: 0.3rem;
+        }
+
+        /* Style for Django form errors */
+        .errorlist {
+            color: #dc3545;
+            list-style: none;
+            padding-left: 0;
+            margin-bottom: 0;
+            font-size: 0.875rem;
+        }
         .container {
             max-width: 600px; /* Limit the width of the form */
             margin-top: 50px; /* Space from the top of the page */
@@ -167,44 +188,81 @@
         <p class="text-center text-muted"><strong>Date:</strong> {{ current_date }}</p>  <!-- Display current date here -->
         <form method="post">
             {% csrf_token %}
-            <div class="form-group">
-                <h5>Activities:</h5>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="readBible" name="read_bible">
-                    <label class="form-check-label" for="readBible">Read Bible</label>
-                </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="prayed" name="prayed">
-                    <label class="form-check-label" for="prayed">Prayed</label>
-                </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="exercised" name="exercised">
-                    <label class="form-check-label" for="exercised">Exercised</label>
-                </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="satisfied" name="satisfied">
-                    <label class="form-check-label" for="satisfied">Satisfied</label>
-                </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="hurtSomeone" name="hurt_someone">
-                    <label class="form-check-label" for="hurtSomeone">Hurt Someone</label>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="lovedSomeone">Name of Someone You Loved Most Today:</label>
-                <input type="text" class="form-control" id="lovedSomeone" name="loved_someone" maxlength="100" placeholder="Enter name" required>
-            </div>
-            <div class="form-group">
-                <label for="somethingNice">Something Nice You Did Today:</label>
-                <textarea class="form-control" id="somethingNice" name="something_nice" rows="3" placeholder="Share a brief summary of your day..." required></textarea>
-            </div>
             
+            <h5>Activities:</h5>
+        
+            <div class="form-check">
+                {{ form.read_bible }}
+                <label class="form-check-label" for="{{ form.read_bible.id_for_label }}">Bible Reading</label>
+            </div>
+        
+            <div class="form-check">
+                {{ form.prayer_god }}
+                <label class="form-check-label" for="{{ form.prayer_god.id_for_label }}">Prayer for World Peace and Personal Necessities</label>
+            </div>
+        
+            <div class="form-check">
+                {{ form.exercised_or_played }}
+                <label class="form-check-label" for="{{ form.exercised_or_played.id_for_label }}">Exercise or Playing</label>
+            </div>
+        
+            <div class="form-check">
+                {{ form.book_reading }}
+                <label class="form-check-label" for="{{ form.book_reading.id_for_label }}">Book Reading</label>
+            </div>
+        
+            <div class="form-check">
+                {{ form.studying_machine_learning }}
+                <label class="form-check-label" for="{{ form.studying_machine_learning.id_for_label }}">Studying Machine Learning</label>
+            </div>
+        
+            <div class="form-check">
+                {{ form.cultivated_relationships }}
+                <label class="form-check-label" for="{{ form.cultivated_relationships.id_for_label }}">Cultivating Good Relationship</label>
+            </div>
+        
+            <div class="form-check">
+                {{ form.woke_up_at_5am }}
+                <label class="form-check-label" for="{{ form.woke_up_at_5am.id_for_label }}">Woke up at 5.00 AM</label>
+            </div>
+        
+            <div class="form-check">
+                {{ form.healthy_eating }}
+                <label class="form-check-label" for="{{ form.healthy_eating.id_for_label }}">Healthy Eating</label>
+            </div>
+        
+            <div class="form-check">
+                {{ form.hurt_someone }}
+                <label class="form-check-label" for="{{ form.hurt_someone.id_for_label }}">Hurt Someone</label>
+            </div>
+        
+            <div class="form-check">
+                {{ form.maintained_purity }}
+                <label class="form-check-label" for="{{ form.maintained_purity.id_for_label }}">Maintained Purity</label>
+            </div>
+        
+            <div class="form-check">
+                {{ form.wasted_time }}
+                <label class="form-check-label" for="{{ form.wasted_time.id_for_label }}">Wasted Time</label>
+            </div>
+        
+            <div class="form-group mt-4">
+                <label for="{{ form.loved_someone.id_for_label }}">Name of Someone You Loved Most Today:</label>
+                {{ form.loved_someone }}
+            </div>
+        
+            <div class="form-group">
+                <label for="{{ form.daily_summary.id_for_label }}">Something Nice You Did Today:</label>
+                {{ form.daily_summary }}
+            </div>
+        
             <div class="d-flex justify-content-center mt-4">
                 <button type="submit" class="btn btn-primary">Submit</button>
-                <button type="button" class="btn btn-secondary ml-3" onclick="window.location.href='{% url 'chart' %}'">View Chart</button>
+                <button type="button" class="btn btn-secondary ms-3" onclick="window.location.href='{% url 'chart' %}'">View Chart</button>
             </div>
-
         </form>
+        
+        
 
         <div class="quote-section">
             <p class="peace-quote">"Peace is not the absence of conflict, but the presence of God."</p> <!-- First quote inside the card -->

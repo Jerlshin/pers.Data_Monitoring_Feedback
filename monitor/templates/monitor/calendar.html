@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Calendar</title>
+
+    <!-- FullCalendar CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css" rel="stylesheet">
+    
+    <!-- FullCalendar JS -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"></script>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* General body styling */
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .calendar-container {
+            width: 80%;
+            max-width: 1000px;
+            padding: 40px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(8px);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        .calendar-container:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        #calendar {
+            width: 100%;
+            font-size: 1.1rem;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            padding-top: 100px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 50%;
+            max-width: 600px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Form styling */
+        .input-form {
+            margin-top: 20px;
+        }
+
+        .input-form input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .input-form button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .input-form button:hover {
+            background-color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <div class="calendar-container">
+        <h1>Event Calendar</h1>
+        <div id="calendar"></div>
+    </div>
+
+    <!-- Modal for showing event information and taking input -->
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Tasks on <span id="modalDate"></span></h2>
+            <div id="eventDetails"></div>
+            <!-- User Input Form -->
+            <div class="input-form">
+                <input type="text" id="bibleReadingInput" placeholder="Bible Reading">
+                <input type="text" id="exerciseInput" placeholder="Exercise">
+                <button id="saveTaskBtn">Save Tasks</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var modal = document.getElementById("eventModal");
+            var span = document.getElementsByClassName("close")[0];
+            var modalDate = document.getElementById("modalDate");
+            var eventDetails = document.getElementById("eventDetails");
+
+            var eventsData = {};  // Object to store user inputs by date
+            var currentSelectedDate = null;
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                height: 600,
+                dateClick: function(info) {
+                    // Store the selected date
+                    currentSelectedDate = info.dateStr;
+
+                    // Clear previous details
+                    eventDetails.innerHTML = '';
+
+                    // Set the modal date
+                    modalDate.innerHTML = info.dateStr;
+
+                    // Display existing tasks for the clicked date, if any
+                    if (eventsData[info.dateStr]) {
+                        eventDetails.innerHTML = `
+                            <p><strong>Bible Reading:</strong> ${eventsData[info.dateStr].bibleReading || 'None'}</p>
+                            <p><strong>Exercise:</strong> ${eventsData[info.dateStr].exercise || 'None'}</p>
+                        `;
+                    } else {
+                        eventDetails.innerHTML = '<p>No tasks for this day yet.</p>';
+                    }
+
+                    // Show the modal
+                    modal.style.display = "block";
+                }
+            });
+
+            calendar.render();
+
+            // Close modal when the user clicks on (x)
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+
+            // Close modal if the user clicks outside of it
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+
+            // Handle saving tasks
+            document.getElementById('saveTaskBtn').onclick = function() {
+                var bibleReading = document.getElementById('bibleReadingInput').value;
+                var exercise = document.getElementById('exerciseInput').value;
+
+                // Save the inputs for the selected date
+                eventsData[currentSelectedDate] = {
+                    bibleReading: bibleReading,
+                    exercise: exercise
+                };
+
+                // Display saved tasks in the modal
+                eventDetails.innerHTML = `
+                    <p><strong>Bible Reading:</strong> ${bibleReading || 'None'}</p>
+                    <p><strong>Exercise:</strong> ${exercise || 'None'}</p>
+                `;
+
+                // Clear the input fields
+                document.getElementById('bibleReadingInput').value = '';
+                document.getElementById('exerciseInput').value = '';
+            };
+        });
+    </script>
+</body>
+</html>

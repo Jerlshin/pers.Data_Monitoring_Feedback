@@ -34,7 +34,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 SECRET_KEY = "django-insecure-*jyp*=#f&6n7opvn48bh#m*y=x7m)q*-lg9(7s&4h%jl!0ron@"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['personal_monitor.herokuapp.com', 'localhost', '127.0.0.1']
 

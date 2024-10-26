@@ -4,21 +4,22 @@ Should be able to download the database as Excel sheet
 
 
 
-/* Additional Quote Styles */
-        .additional-quote {
-            margin-top: 20px; /* Space above the additional quote */
-            font-family: 'Roboto', sans-serif; /* Consistent font */
-            font-size: 1.5rem; /* Font size */
-            color: #555; /* Color for the quote */
-            text-align: center; /* Center align the quote */
-            padding: 10px; /* Padding for better spacing */
-            opacity: 0; /* Start as invisible */
-            animation: fadeIn 1s forwards; /* Fade-in effect */
-            animation-delay: 0.5s; /* Delay before fade-in starts */
-        }
+VERCEL -- deploy the frontend 
+ATLAS -- deploy the datasbase
 
-<!-- Additional Quote Section -->
-    <div class="additional-quote">
-        <p>"Love is not about how many days, months, or years you have been together. Love is about how much you love each other every single day."</p>
-    </div>
+using MongoDB
 
+
+
+
+Along with the other two graphs, i want to "ADD" another graph to the webpage. 
+
+The graph should have just 
+
+
+
+all on positive graphs... 
+
+all these values should be line plots included in "single" graph. all these 5 plots should be made in 1 graph (3rd graph). So, can you give code for both.
+
+THe 3rd should also follow the same styling as other 2 graphs
