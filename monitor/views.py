@@ -153,7 +153,7 @@ def chart_view(request):
             'Woke Up at 5 AM', 
             'Healthy Eating', 
             'Hurt Someone', 
-            'Masturbated', 
+            'Purity', 
             'Wasted Time'
         ],
         'values': [
@@ -197,7 +197,7 @@ def export_to_excel_view(request):
         'Woke Up at 5 AM', 
         'Healthy Eating', 
         'Hurt Someone', 
-        'Masturbated', 
+        'Purity', 
         'Wasted Time', 
         'Daily Summary'  # Ensure to include Daily Summary at the end
     ]
