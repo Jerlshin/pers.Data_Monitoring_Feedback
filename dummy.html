@@ -3,82 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Interactive Calendar</title>
+    <title>Interactive Calendar</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
+        /* Basic Styling for the Page */
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: #f9fafc;
+            background-color: #f0f4f8;
             margin: 0;
-            padding: 20px;
+            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
-        .container {
+        .calendar {
             width: 100%;
-            max-width: 1200px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .calendar-container {
+            max-width: 900px;
             background-color: #ffffff;
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            padding: 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
         }
 
         .calendar-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #f1f1f1;
+            padding: 20px;
+            background-color: #007bff;
+            color: #ffffff;
         }
 
         .calendar-header button {
             background-color: transparent;
             border: none;
-            color: #007bff;
+            color: white;
             font-size: 20px;
             cursor: pointer;
-            transition: color 0.3s;
         }
 
         .calendar-header button:hover {
-            color: #0056b3;
+            opacity: 0.7;
         }
 
         .calendar-header h2 {
             font-size: 24px;
+            font-weight: 500;
             margin: 0;
         }
 
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 10px;
-            margin-top: 20px;
+            gap: 1px;
+            background-color: #f1f1f1;
         }
 
         .calendar-cell {
-            background-color: #f8f9fa;
-            padding: 15px;
+            background-color: #ffffff;
+            padding: 20px;
             text-align: center;
-            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
             transition: background-color 0.3s, transform 0.3s;
         }
 
         .calendar-cell:hover {
-            background-color: #e3f2fd;
+            background-color: #f0f8ff;
             transform: scale(1.05);
         }
 
         .calendar-cell.inactive {
-            color: #bdbdbd;
+            color: #bbb;
         }
 
         .calendar-cell .task-indicator {
@@ -173,25 +170,35 @@
             background-color: #0056b3;
         }
 
-        .bottom-container {
+        /* To-Do List Styling */
+        .todo-container, .consolidated-container {
+            width: 100%;
+            max-width: 900px;
+            margin-top: 30px;
             display: flex;
             justify-content: space-between;
             gap: 20px;
         }
 
         .todo-container, .consolidated-container {
-            flex: 1;
+            padding: 20px;
             background-color: #ffffff;
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
         }
 
-        h3 {
-            font-size: 20px;
-            margin-bottom: 10px;
+        .todo-container {
+            flex-direction: column;
+            width: 45%;
+        }
+
+        .consolidated-container {
+            flex-direction: column;
+            width: 45%;
+        }
+
+        .todo-container input, .todo-container button {
+            width: 100%;
         }
 
         .task-list {
@@ -204,11 +211,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px;
+            padding: 12px;
             background-color: #f8f9fa;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin: 8px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
         }
 
         .task-list button {
@@ -218,79 +225,41 @@
             padding: 6px 12px;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 14px;
         }
 
         .task-list button:hover {
             background-color: #b02a37;
         }
 
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        input[type="text"] {
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-
-        input[type="text"]:focus {
-            border-color: #007bff;
-        }
-
-        button[type="submit"] {
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-
-        button[type="submit"]:hover {
-            background-color: #0056b3;
-        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Calendar Container -->
-        <div class="calendar-container">
-            <div class="calendar-header">
-                <button id="prevMonth">&laquo;</button>
-                <h2 id="monthYear"></h2>
-                <button id="nextMonth">&raquo;</button>
-            </div>
-            <div class="calendar-grid" id="calendarGrid"></div>
+    <!-- Calendar Section -->
+    <div class="calendar">
+        <div class="calendar-header">
+            <button id="prevMonth">&laquo;</button>
+            <h2 id="monthYear"></h2>
+            <button id="nextMonth">&raquo;</button>
         </div>
-
-        <!-- Bottom Containers -->
-        <div class="bottom-container">
-            <!-- To-Do List -->
-            <div class="todo-container">
-                <h3>To-Do List (Long-Term Goals)</h3>
-                <form id="todoForm">
-                    <input type="text" id="todoInput" placeholder="Enter long-term task..." required>
-                    <button type="submit">Add to To-Do List</button>
-                </form>
-                <ul id="todoList" class="task-list"></ul>
-            </div>
-
-            <!-- Consolidated Tasks -->
-            <div class="consolidated-container">
-                <h3>Consolidated Tasks</h3>
-                <ul id="consolidatedTaskList" class="task-list"></ul>
-            </div>
-        </div>
+        <div class="calendar-grid" id="calendarGrid"></div>
     </div>
+
+    <!-- To-Do List Section -->
+    <div class="todo-container">
+        <h3>To-Do List (Long-Term Goals)</h3>
+        <form id="todoForm">
+            <input type="text" id="todoInput" placeholder="Enter long-term task..." required>
+            <button type="submit">Add to To-Do List</button>
+        </form>
+        <ul id="todoList" class="task-list"></ul>
+    </div>
+
+    <!-- Consolidated Tasks Section -->
+    <div class="consolidated-container">
+        <h3>Consolidated Tasks</h3>
+        <ul id="consolidatedTaskList" class="task-list"></ul>
+    </div>
+
     <!-- Modal for Task Input -->
     <div class="modal" id="taskModal">
         <div class="modal-content">
@@ -317,18 +286,16 @@
         // DOM Elements
         const calendarGrid = document.getElementById('calendarGrid');
         const monthYear = document.getElementById('monthYear');
-        const todoInput = document.getElementById('todoInput');
-        const todoList = document.getElementById('todoList');
-        const consolidatedTaskList = document.getElementById('consolidatedTaskList');
-        const todoForm = document.getElementById('todoForm');
-
         const taskModal = document.getElementById('taskModal');
         const modalTitle = document.getElementById('modalTitle');
         const taskList = document.getElementById('taskList');
         const taskForm = document.getElementById('taskForm');
         const taskNameInput = document.getElementById('taskName');
         const taskTypeInputs = document.getElementsByName('taskType');
-
+        const todoInput = document.getElementById('todoInput');
+        const todoList = document.getElementById('todoList');
+        const consolidatedTaskList = document.getElementById('consolidatedTaskList');
+        const todoForm = document.getElementById('todoForm');
 
         let currentDate = new Date();
         let selectedDate = null;
@@ -402,12 +369,6 @@
             taskModal.style.display = 'none';
         };
 
-        // Open Task Modal
-        const openTaskModal = (day) => {
-            const selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-            loadTasks(selectedDate);
-        };
-
         // Load Tasks for the Selected Date
         const loadTasks = () => {
             taskList.innerHTML = '';
@@ -430,16 +391,15 @@
         // Add Task to Calendar
         const addTask = (event) => {
             event.preventDefault();
-            const taskName = document.getElementById('taskName').value.trim();
-            const taskType = document.querySelector('input[name="taskType"]:checked').value;
+            const taskName = taskNameInput.value.trim();
+            const taskType = [...taskTypeInputs].find(input => input.checked).value;
             if (taskName === '') return;
-
             const tasks = JSON.parse(localStorage.getItem(selectedDate.toDateString())) || [];
             tasks.push({ name: taskName, type: taskType });
             localStorage.setItem(selectedDate.toDateString(), JSON.stringify(tasks));
-            loadTasks(selectedDate);
+            loadTasks();
             renderCalendar();
-            loadConsolidatedTasks();
+            taskNameInput.value = '';
         };
 
         // Delete Task from Calendar
@@ -447,9 +407,8 @@
             const tasks = JSON.parse(localStorage.getItem(selectedDate.toDateString())) || [];
             tasks.splice(index, 1);
             localStorage.setItem(selectedDate.toDateString(), JSON.stringify(tasks));
-            loadTasks(selectedDate);
+            loadTasks();
             renderCalendar();
-            loadConsolidatedTasks();
         };
 
         // Add Long-Term Task to To-Do List
@@ -457,10 +416,9 @@
             event.preventDefault();
             const todoTask = todoInput.value.trim();
             if (todoTask === '') return;
-        
-            const longTermTasks = JSON.parse(localStorage.getItem('longTermTasks')) || []; 
-            longTermTasks.push({ name: todoTask }); 
-            localStorage.setItem('longTermTasks', JSON.stringify(longTermTasks));
+            const todoTasks = JSON.parse(localStorage.getItem('todoTasks')) || [];
+            todoTasks.push({ name: todoTask });
+            localStorage.setItem('todoTasks', JSON.stringify(todoTasks));
             loadTodoTasks();
             todoInput.value = '';
         };
@@ -468,7 +426,7 @@
         // Load To-Do List Tasks
         const loadTodoTasks = () => {
             todoList.innerHTML = '';
-            const todoTasks = JSON.parse(localStorage.getItem('longTermTasks')) || [];
+            const todoTasks = JSON.parse(localStorage.getItem('todoTasks')) || [];
             todoTasks.forEach((task, index) => {
                 const taskItem = document.createElement('li');
                 taskItem.textContent = task.name;
@@ -482,9 +440,9 @@
 
         // Delete Long-Term Task from To-Do List
         const deleteTodoTask = (index) => {
-            const todoTasks = JSON.parse(localStorage.getItem('longTermTasks')) || [];
+            const todoTasks = JSON.parse(localStorage.getItem('todoTasks')) || [];
             todoTasks.splice(index, 1);
-            localStorage.setItem('longTermTasks', JSON.stringify(todoTasks));
+            localStorage.setItem('todoTasks', JSON.stringify(todoTasks));
             loadTodoTasks();
         };
 
@@ -506,20 +464,13 @@
 
             tasks.forEach(task => {
                 const taskItem = document.createElement('li');
-                // Separate task name and date with a colon (:) and space
-                taskItem.textContent = `${task.name}: ${task.date}`;
-
-                // Add a border to the bottom of each list item for separation
-                taskItem.style.borderBottom = '1px solid #f1f1f1';
-                taskItem.style.paddingBottom = '5px';
-
+                taskItem.textContent = `${task.name} - ${task.date}`;
                 consolidatedTaskList.appendChild(taskItem);
             });
         };
 
         // Event Listeners
         taskForm.addEventListener('submit', addTask);
-
         todoForm.addEventListener('submit', addTodoTask);
         document.getElementById('prevMonth').addEventListener('click', () => {
             currentDate.setMonth(currentDate.getMonth() - 1);
@@ -537,4 +488,3 @@
     </script>
 </body>
 </html>
-
