@@ -75,32 +75,59 @@
             background-color: #1a252f;
             transform: translateY(2px);
         }
-        .logout-button, .home-button {
+        .home-button, .logout-button {
             position: fixed;
             top: 20px;
-            padding: 10px 20px;
-            border-radius: 30px;
             font-size: 1em;
-            font-weight: bold;
+            font-weight: 700;
+            padding: 12px 20px;
+            border-radius: 25px;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.1s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
+        .home-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: 700; /* Bold text for home */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .home-button:hover {
+            background-color: #0056b3;
+        }
+        .home-button:active {
+            transform: translateY(2px); /* Button press effect */
+        }
+
         .logout-button {
+            position: fixed;
+            top: 20px;
             right: 20px;
             background-color: #e74c3c;
             color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: 700; /* Bold text for logout */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         .logout-button:hover {
             background-color: #c0392b;
         }
-        .home-button {
-            left: 20px;
-            background-color: #007bff;
-            color: white;
-        }
-        .home-button:hover {
-            background-color: #0056b3;
+        .logout-button:active {
+            transform: translateY(2px); /* Button press effect */
         }
     </style>
 </head>
