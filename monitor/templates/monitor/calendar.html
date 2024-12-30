@@ -237,7 +237,7 @@
             display: flex;
             align-items: center;  /* Center items vertically */
             justify-content: space-between;  /* Distribute space between task name and date */
-            padding: 12px;
+            padding: 10px 15px;
             background-color: #fff;
             border-radius: 10px;
             margin-bottom: 10px;
@@ -284,13 +284,13 @@
 
         /* Task Date Style */
         .consolidated-task-date {
-            font-size: 12px;
+            font-size: 10px;
             color: #757575;
             font-style: italic;
         }
 
         .consolidated-task-item.selected {
-            box-shadow: 0 0 15px rgba(0, 123, 255, 0.7); /* Glow effect with blue color */
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.7); /* Glow effect with blue color */
             border: 1px solid #007bff; /* Border color change to blue */
         }
 
@@ -302,7 +302,7 @@
             top: 50%;
             left: 50%; /* Position the menu to the right of the task item */
             transform: translateY(-50%); /* Center it vertically with the task item */
-            background: linear-gradient(135deg, #e0e0e0, #b0b0b0); /* Lighter gray gradient background */
+            background-color: #f9f9f9;
             border: 1px solid #ccc; /* Subtle border */
             border-radius: 4px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -310,6 +310,8 @@
             z-index: 9999; /* Ensure menu appears on top of other elements */
             padding: 4px 0; /* Add padding inside the menu for spacing */
             box-sizing: border-box;
+            overflow: visible;
+            min-width: 150px;
         }
 
         .priority-option {
@@ -318,12 +320,20 @@
             font-size: 12px;
             color: black;
             font-weight: 500;
-            transition: background-color 0.3s ease;
+            transition: all 0.2s ease;
         }
         
         /* Hover Effect for Priority Options */
         .priority-option:hover {
-            background-color: #007bff;
+            background-color: #f0f8ff;
+            color: #007acc;
+            border-left: 4px solid #007acc;
+        }
+
+        .priority-option.active {
+            font-weight: bold;
+            background-color: #e6f7ff;
+            color: #0056b3;
         }
         
         /* Add subtle animation when the priority menu is toggled */
@@ -616,12 +626,12 @@
             loadTodoTasks();
         };
 
-        // Load Consolidated Tasks
+        // Render the Consolidated Tasks
         const loadConsolidatedTasks = () => {
             consolidatedTaskList.innerHTML = '';
             const tasks = [];
-            const todoTasks = JSON.parse(localStorage.getItem('todoTasks')) || [];
-            todoTasks.forEach(task => tasks.push({ ...task, date: 'Long-Term' }));
+            const longTermTasks = JSON.parse(localStorage.getItem('longTermTasks')) || [];
+            longTermTasks.forEach(task => tasks.push({ ...task, date: 'Long-Term' }));
         
             Object.keys(localStorage).forEach(key => {
                 if (new Date(key).toString() !== 'Invalid Date') {
@@ -634,10 +644,7 @@
         
             tasks.forEach(task => {
                 const taskItem = document.createElement('li');
-                taskItem.classList.add('consolidated-task-item', task.priority); // Add priority class
-                
-                taskItem.setAttribute('data-name', task.name); // Add data attributes for task identification
-                taskItem.setAttribute('data-date', task.date);
+                taskItem.classList.add('consolidated-task-item', task.priority);
             
                 // Task Name
                 const taskName = document.createElement('span');
@@ -649,7 +656,7 @@
                 taskDate.textContent = task.date;
                 taskDate.classList.add('consolidated-task-date');
             
-                // Create a priority selection menu that will show up on click
+                // Priority Menu
                 const priorityMenu = document.createElement('div');
                 priorityMenu.classList.add('priority-menu');
                 const priorities = ['highly-important', 'medium-important', 'important'];
@@ -658,23 +665,24 @@
                     const option = document.createElement('div');
                     option.classList.add('priority-option');
                     option.textContent = priority.replace('-', ' ').toUpperCase();
-                    option.addEventListener('click', () => {
-                        setPriority(task, priority);
-                        closePriorityMenu();
+                    option.addEventListener('click', (e) => {
+                        e.stopPropagation(); // Prevent bubbling to task click
+                        setPriority(task, priority); // Update priority
+                        closePriorityMenu(); // Close the menu
                     });
                     priorityMenu.appendChild(option);
                 });
             
-                // Append the name, date to the task item
+                // Append elements to the task item
                 taskItem.appendChild(taskName);
                 taskItem.appendChild(taskDate);
                 taskItem.appendChild(priorityMenu);
             
-                // Event listener for clicking the task to show the priority menu
+                // Event listener for task selection and menu toggle
                 taskItem.addEventListener('click', (e) => {
-                    e.stopPropagation(); // Prevent event bubbling
-                    toggleTaskSelection(taskItem);
-                    togglePriorityMenu(taskItem, priorityMenu);
+                    e.stopPropagation();
+                    toggleTaskSelection(taskItem); // Highlight the task
+                    togglePriorityMenu(taskItem, priorityMenu); // Show the priority menu
                 });
             
                 consolidatedTaskList.appendChild(taskItem);
@@ -682,13 +690,10 @@
         
             // Close all open menus when clicking outside
             document.addEventListener('click', () => {
-                const openMenus = document.querySelectorAll('.priority-menu');
-                openMenus.forEach(menu => {
-                    menu.style.display = 'none';
-                });
+                closePriorityMenu();
             });
         };
-
+        
         // Toggle the visibility of the priority menu
         function togglePriorityMenu(taskItem, priorityMenu) {
             const allMenus = document.querySelectorAll('.priority-menu');
@@ -699,49 +704,63 @@
             });
             priorityMenu.style.display = priorityMenu.style.display === 'block' ? 'none' : 'block';
         }
-
+        
         // Update the task's priority in localStorage
         function setPriority(task, priority) {
-            const todoTasks = JSON.parse(localStorage.getItem('todoTasks')) || [];
-            const updatedTasks = todoTasks.map(t => {
-                if (t.name === task.name && t.date === task.date) {
-                    t.priority = priority;
-                }
-                return t;
-            });
-            localStorage.setItem('todoTasks', JSON.stringify(updatedTasks));
-            
-            // Update the task's class and appearance
-            const taskItem = document.querySelector(`.consolidated-task-item[data-name="${task.name}"][data-date="${task.date}"]`);
-            if (taskItem) {
-                taskItem.classList.remove('highly-important', 'medium-important', 'important');
-                taskItem.classList.add(priority);
+            if (task.date === 'Long-Term') {
+                // Update priority for long-term tasks
+                const longTermTasks = JSON.parse(localStorage.getItem('longTermTasks')) || [];
+                const updatedTasks = longTermTasks.map(t => {
+                    if (t.name === task.name) {
+                        t.priority = priority;
+                    }
+                    return t;
+                });
+                localStorage.setItem('longTermTasks', JSON.stringify(updatedTasks));
+            } else {
+                // Update priority for day-wise tasks
+                const tasks = JSON.parse(localStorage.getItem(task.date)) || [];
+                const updatedTasks = tasks.map(t => {
+                    if (t.name === task.name) {
+                        t.priority = priority;
+                    }
+                    return t;
+                });
+                localStorage.setItem(task.date, JSON.stringify(updatedTasks));
             }
         
-            // Remove the glow effect (selected class) after setting the priority
-            if (taskItem) {
-                taskItem.classList.remove('selected');
-            }
+            // Refresh the task list to reflect changes
+            loadConsolidatedTasks();
         }
-
-        // Close the priority menu when a selection is made or clicked outside
+        
+        // Close all priority menus
         function closePriorityMenu() {
             const openMenus = document.querySelectorAll('.priority-menu');
             openMenus.forEach(menu => {
                 menu.style.display = 'none';
             });
         }
-
-        // Toggle the selected state of the task when clicked
+        
+        // Highlight the selected task
         function toggleTaskSelection(taskItem) {
             const allTasks = document.querySelectorAll('.consolidated-task-item');
             allTasks.forEach(task => {
-                task.classList.remove('selected'); // Remove the selected class from all tasks
+                task.classList.remove('selected');
             });
-            taskItem.classList.add('selected'); // Add selected class to the clicked task
+            taskItem.classList.add('selected');
         }
-
         
+        // Remove the glow effect when clicking outside a task
+        document.addEventListener('click', (e) => {
+            const isTaskClicked = e.target.closest('.consolidated-task-item');
+            if (!isTaskClicked) {
+                const allTasks = document.querySelectorAll('.consolidated-task-item');
+                allTasks.forEach(task => {
+                    task.classList.remove('selected'); // Remove the selected class from all tasks
+                });
+            }
+        });
+
         // Event listener for task clicks
         const taskItems = document.querySelectorAll('.consolidated-task-item');
         taskItems.forEach(taskItem => {
