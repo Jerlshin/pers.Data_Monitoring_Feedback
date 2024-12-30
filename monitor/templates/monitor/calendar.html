@@ -177,6 +177,10 @@
             display: flex;
             justify-content: space-between;
             gap: 20px;
+            width: 100%;   /* Ensure the container takes full width */
+            max-width: 2000px;  /* You can adjust this value for desired max-width */
+            height: 500px;  /* Set specific height to make the container bigger */
+            margin-top: 20px; /* Adjust spacing if necessary */
         }
 
         .todo-container, .consolidated-container {
@@ -187,6 +191,8 @@
             padding: 20px;
             display: flex;
             flex-direction: column;
+            height: 100%;  /* Ensure the containers fill the bottom-container */
+            overflow-y: auto;  /* Allow scrolling if content overflows */
         }
 
         h3 {
@@ -195,6 +201,8 @@
         }
 
         .task-list {
+            flex-grow: 1;
+            overflow-y: auto;
             list-style: none;
             padding: 0;
             margin: 0;
@@ -225,6 +233,125 @@
             background-color: #b02a37;
         }
 
+        .consolidated-task-item {
+            display: flex;
+            align-items: center;  /* Center items vertically */
+            justify-content: space-between;  /* Distribute space between task name and date */
+            padding: 12px;
+            background-color: #fff;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        /* Priority Styles with Gradients and Soft Effects */
+        .consolidated-task-item.highly-important {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e42); /* Gradient for Highly Important */
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+            border-radius: 8px; /* Rounded corners for a softer look */
+            padding: 10px;
+        }
+
+        .consolidated-task-item.medium-important {
+            background: linear-gradient(135deg, #80e27e, #64b5f6); /* Gradient for Medium Important */
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+            border-radius: 8px; /* Rounded corners for a softer look */
+            padding: 10px;
+        }
+
+        .consolidated-task-item.important {
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+            border-radius: 8px; /* Rounded corners for a softer look */
+            padding: 10px;
+        }
+
+
+        /* Task Name Style */
+        .consolidated-task-name {
+            font-size: 14px;
+            font-weight: 450;
+            color: #333;
+            margin-right: 12px;
+        }
+
+        /* Task Date Style */
+        .consolidated-task-date {
+            font-size: 12px;
+            color: #757575;
+            font-style: italic;
+        }
+
+        .consolidated-task-item.selected {
+            box-shadow: 0 0 15px rgba(0, 123, 255, 0.7); /* Glow effect with blue color */
+            border: 1px solid #007bff; /* Border color change to blue */
+        }
+
+
+        /* Dropdown Style with Modern Look */
+        .priority-menu {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%; /* Position the menu to the right of the task item */
+            transform: translateY(-50%); /* Center it vertically with the task item */
+            background: linear-gradient(135deg, #e0e0e0, #b0b0b0); /* Lighter gray gradient background */
+            border: 1px solid #ccc; /* Subtle border */
+            border-radius: 4px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 150px;
+            z-index: 9999; /* Ensure menu appears on top of other elements */
+            padding: 4px 0; /* Add padding inside the menu for spacing */
+            box-sizing: border-box;
+        }
+
+        .priority-option {
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 12px;
+            color: black;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+        
+        /* Hover Effect for Priority Options */
+        .priority-option:hover {
+            background-color: #007bff;
+        }
+        
+        /* Add subtle animation when the priority menu is toggled */
+        .priority-menu {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .priority-menu.show {
+            display: block;
+            transform: translateY(-50%) translateX(5px);
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        /* Close all open menus when clicking outside */
+        .document-click {
+            display: none;
+        }
+
+        #consolidated-task-list {
+            padding: 20px;
+        }
+        
         form {
             display: flex;
             flex-direction: column;
@@ -258,6 +385,7 @@
         button[type="submit"]:hover {
             background-color: #0056b3;
         }
+
     </style>
 </head>
 <body>
@@ -494,28 +622,135 @@
             const tasks = [];
             const todoTasks = JSON.parse(localStorage.getItem('todoTasks')) || [];
             todoTasks.forEach(task => tasks.push({ ...task, date: 'Long-Term' }));
-
+        
             Object.keys(localStorage).forEach(key => {
                 if (new Date(key).toString() !== 'Invalid Date') {
                     const dateTasks = JSON.parse(localStorage.getItem(key));
                     dateTasks.forEach(task => {
-                        tasks.push({ name: task.name, date: key });
+                        tasks.push({ name: task.name, date: key, priority: task.priority || 'important' });
                     });
                 }
             });
-
+        
             tasks.forEach(task => {
                 const taskItem = document.createElement('li');
-                // Separate task name and date with a colon (:) and space
-                taskItem.textContent = `${task.name}: ${task.date}`;
-
-                // Add a border to the bottom of each list item for separation
-                taskItem.style.borderBottom = '1px solid #f1f1f1';
-                taskItem.style.paddingBottom = '5px';
-
+                taskItem.classList.add('consolidated-task-item', task.priority); // Add priority class
+                
+                taskItem.setAttribute('data-name', task.name); // Add data attributes for task identification
+                taskItem.setAttribute('data-date', task.date);
+            
+                // Task Name
+                const taskName = document.createElement('span');
+                taskName.textContent = task.name;
+                taskName.classList.add('consolidated-task-name');
+            
+                // Task Date
+                const taskDate = document.createElement('span');
+                taskDate.textContent = task.date;
+                taskDate.classList.add('consolidated-task-date');
+            
+                // Create a priority selection menu that will show up on click
+                const priorityMenu = document.createElement('div');
+                priorityMenu.classList.add('priority-menu');
+                const priorities = ['highly-important', 'medium-important', 'important'];
+            
+                priorities.forEach(priority => {
+                    const option = document.createElement('div');
+                    option.classList.add('priority-option');
+                    option.textContent = priority.replace('-', ' ').toUpperCase();
+                    option.addEventListener('click', () => {
+                        setPriority(task, priority);
+                        closePriorityMenu();
+                    });
+                    priorityMenu.appendChild(option);
+                });
+            
+                // Append the name, date to the task item
+                taskItem.appendChild(taskName);
+                taskItem.appendChild(taskDate);
+                taskItem.appendChild(priorityMenu);
+            
+                // Event listener for clicking the task to show the priority menu
+                taskItem.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent event bubbling
+                    toggleTaskSelection(taskItem);
+                    togglePriorityMenu(taskItem, priorityMenu);
+                });
+            
                 consolidatedTaskList.appendChild(taskItem);
             });
+        
+            // Close all open menus when clicking outside
+            document.addEventListener('click', () => {
+                const openMenus = document.querySelectorAll('.priority-menu');
+                openMenus.forEach(menu => {
+                    menu.style.display = 'none';
+                });
+            });
         };
+
+        // Toggle the visibility of the priority menu
+        function togglePriorityMenu(taskItem, priorityMenu) {
+            const allMenus = document.querySelectorAll('.priority-menu');
+            allMenus.forEach(menu => {
+                if (menu !== priorityMenu) {
+                    menu.style.display = 'none';
+                }
+            });
+            priorityMenu.style.display = priorityMenu.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Update the task's priority in localStorage
+        function setPriority(task, priority) {
+            const todoTasks = JSON.parse(localStorage.getItem('todoTasks')) || [];
+            const updatedTasks = todoTasks.map(t => {
+                if (t.name === task.name && t.date === task.date) {
+                    t.priority = priority;
+                }
+                return t;
+            });
+            localStorage.setItem('todoTasks', JSON.stringify(updatedTasks));
+            
+            // Update the task's class and appearance
+            const taskItem = document.querySelector(`.consolidated-task-item[data-name="${task.name}"][data-date="${task.date}"]`);
+            if (taskItem) {
+                taskItem.classList.remove('highly-important', 'medium-important', 'important');
+                taskItem.classList.add(priority);
+            }
+        
+            // Remove the glow effect (selected class) after setting the priority
+            if (taskItem) {
+                taskItem.classList.remove('selected');
+            }
+        }
+
+        // Close the priority menu when a selection is made or clicked outside
+        function closePriorityMenu() {
+            const openMenus = document.querySelectorAll('.priority-menu');
+            openMenus.forEach(menu => {
+                menu.style.display = 'none';
+            });
+        }
+
+        // Toggle the selected state of the task when clicked
+        function toggleTaskSelection(taskItem) {
+            const allTasks = document.querySelectorAll('.consolidated-task-item');
+            allTasks.forEach(task => {
+                task.classList.remove('selected'); // Remove the selected class from all tasks
+            });
+            taskItem.classList.add('selected'); // Add selected class to the clicked task
+        }
+
+        
+        // Event listener for task clicks
+        const taskItems = document.querySelectorAll('.consolidated-task-item');
+        taskItems.forEach(taskItem => {
+            taskItem.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent event bubbling
+                toggleTaskSelection(taskItem); // Highlight the clicked task
+                togglePriorityMenu(taskItem, taskItem.querySelector('.priority-menu')); // Show the priority menu
+            });
+        });
 
         // Event Listeners
         taskForm.addEventListener('submit', addTask);
