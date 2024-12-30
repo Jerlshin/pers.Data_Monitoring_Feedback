@@ -1,5 +1,6 @@
 from django import forms
 from .models import UserInput
+from .models import Quote
 
 class UserInputForm(forms.ModelForm):
     # Add custom labels for fields
@@ -111,3 +112,9 @@ class UserInputForm(forms.ModelForm):
             'daily_summary'
         ]
         
+
+
+class QuoteForm(forms.ModelForm):
+    class Meta:
+        model = Quote
+        fields = ['text']

@@ -21,3 +21,10 @@ class UserInput(models.Model):
 
     def __str__(self):
         return f"{self.date}: {self.loved_someone}"
+
+class Quote(models.Model):
+    text = models.TextField(max_length=3000)
+    
+    def __str__(self):
+        return self.text[:50] # Show first 50 characters of the quote in admin
+

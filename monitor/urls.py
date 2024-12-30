@@ -9,6 +9,7 @@ urlpatterns = [
     path('chart/', views.chart_view, name='chart'),
     path('download_excel/', views.export_to_excel_view, name='download_excel'),  # URL mapping for downloading Excel
     path('calendar/', views.calendar_view, name='calendar'),
+    path('delete-quote/<int:id>/', views.delete_quote, name='delete_quote'),
 
 
 ]

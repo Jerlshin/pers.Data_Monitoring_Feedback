@@ -6,191 +6,310 @@
     <title>Home Page</title>
     {% load static %} <!-- Load static files -->
     <style>
-        /* Overall body styles */
+        /* General Styles */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-image: url('{% static "images/login_page_bg.jpg" %}'); /* Background image */
-            background-size: cover; /* Cover entire viewport */
-            background-position: center; /* Center the image */
+            background: linear-gradient(to right, #eef2f3, #8e9eab); /* Gradient background */
+            background-size: cover;
+            background-position: center;
+            color: #333;
             padding: 20px;
-            color: #333; /* Dark text for readability */
-            background: linear-gradient(to right, #eef2f3, #8e9eab); /* Subtle gradient */
         }
-        /* Container for the main content */
-        .container {
+
+        /* Main Content Container */
+        .main-container {
             max-width: 600px;
             margin: 0 auto;
-            padding: 40px; /* Increased padding for a more spacious look */
-            background-color: rgba(255, 255, 255, 0.8); /* Slightly transparent white background for content */
-            border-radius: 8px; /* Rounded corners for a softer appearance */
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Enhanced shadow for depth */
+            padding: 40px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             text-align: center;
         }
-        /* Base button styles */
-        button {
+
+        /* Button Styles */
+        .button {
             padding: 12px 24px;
             border: none;
-            border-radius: 8px; /* Slightly rounded corners */
+            border-radius: 8px;
             margin: 10px;
             cursor: pointer;
-            font-weight: bold; /* Bold text for emphasis */
-            font-size: 1rem; /* Consistent font size */
-            transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s; /* Smooth transition effects */
+            font-weight: bold;
+            font-size: 1rem;
+            transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
         }
-        /* Primary button styles with gradient */
-        .primary-button {
-            background: linear-gradient(90deg, #007bff, #0056b3); /* Gradient for primary button */
+
+        .button--primary {
+            background: linear-gradient(90deg, #007bff, #0056b3);
             color: white;
-            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.5); /* Shadow for depth */
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.5);
         }
-        .primary-button:hover {
-            background: linear-gradient(90deg, #0056b3, #004085); /* Darker gradient on hover */
-            transform: translateY(-2px); /* Slight lift effect */
+
+        .button--primary:hover {
+            background: linear-gradient(90deg, #0056b3, #004085);
+            transform: translateY(-2px);
         }
-        /* Secondary button styles with gradient */
-        .secondary-button {
-            background: linear-gradient(90deg, #6c757d, #5a6268); /* Gradient for secondary button */
+
+        .button--secondary {
+            background: linear-gradient(90deg, #6c757d, #5a6268);
             color: white;
-            box-shadow: 0 4px 10px rgba(108, 117, 125, 0.5); /* Shadow for depth */
+            box-shadow: 0 4px 10px rgba(108, 117, 125, 0.5);
         }
-        .secondary-button:hover {
-            background: linear-gradient(90deg, #5a6268, #4e555b); /* Darker gradient on hover */
-            transform: translateY(-2px); /* Slight lift effect */
+
+        .button--secondary:hover {
+            background: linear-gradient(90deg, #5a6268, #4e555b);
+            transform: translateY(-2px);
         }
-        /* Logout button specific styles */
-        .logout-button {
-            background-color: #e74c3c; /* Logout button color */
+
+        .button--logout {
+            background-color: #e74c3c;
             color: white;
-            border-radius: 20px; /* More rounded corners for logout button */
-            font-weight: bold; /* Bold text for emphasis */
+            border-radius: 20px;
+            font-weight: bold;
         }
-        .logout-button:hover {
-            background-color: #c0392b; /* Darker shade on hover */
-            transform: translateY(-2px); /* Slight lift effect */
-            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.5); /* Shadow for depth */
+
+        .button--logout:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.5);
         }
-        /* Download button styles */
-        #download-btn {
-            background: linear-gradient(90deg, #28a745, #218838);  /* Green gradient */
+
+        .button--download {
+            background: linear-gradient(90deg, #28a745, #218838);
             color: white;
             box-shadow: 0 4px 10px rgba(40, 167, 69, 0.5);
         }
-        #download-btn:hover {
-            background: linear-gradient(90deg, #218838, #1e7e34); /* Darker green on hover */
+
+        .button--download:hover {
+            background: linear-gradient(90deg, #218838, #1e7e34);
             transform: translateY(-2px);
         }
-        /* Quotes section styles */
-        .masonry-quotes {
+
+        /* Quotes Section Styles */
+        .quotes-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr); /* Set exactly 5 columns */
+            grid-template-columns: repeat(5, 1fr);
             gap: 20px;
             padding: 20px;
         }
-        /* Individual quote card styles */
+
         .quote-card {
-            background: linear-gradient(145deg, rgba(231, 243, 254, 0.9), rgba(255, 255, 255, 0.9)); /* Subtle gradient for a modern feel */
-            border-left: 6px solid #007bff; /* Slightly thicker border for emphasis */
-            padding: 25px 30px; /* Increased padding for more spacious feel */
-            border-radius: 12px; /* Rounded corners for a softer, more polished look */
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1), 0 2px 10px rgba(0, 0, 0, 0.05); /* Deeper shadow for more lift */
-            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover effects */
+            background: linear-gradient(145deg, rgba(231, 243, 254, 0.9), rgba(255, 255, 255, 0.9));
+            border-left: 6px solid #007bff;
+            padding: 25px 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1), 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             text-align: center;
-            position: relative; /* For better control over hover effects */
+            position: relative;
         }
-        
-        .quote-card:hover {
-            transform: translateY(-5px); /* Slight lift effect */
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15), 0 4px 15px rgba(0, 0, 0, 0.1); /* Stronger shadow on hover */
-        }
-        
-        
 
         .quote-card:hover {
-            transform: scale(1.02); /* Slightly enlarge on hover */
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15), 0 4px 15px rgba(0, 0, 0, 0.1);
         }
+
         .quote-text {
-            font-style: italic; /* Italicized text for quotes */
-            color: #333; /* Darker text for better readability */
-            font-family: 'Georgia', serif; /* Elegant serif font for quotes */
-            font-weight: 500; /* Slightly bold to enhance visibility */
-            letter-spacing: 0.5px; /* Subtle letter spacing for clarity */
-            line-height: 1.6; /* Increased line height for readability */
-            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+            font-style: italic;
+            color: #333;
+            font-family: 'Georgia', serif;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            line-height: 1.6;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
             margin: 0;
-            padding: 10px 20px; /* Add padding to create breathing space */
-            position: relative; /* To position quote marks */
+            padding: 10px 20px;
+            position: relative;
         }
-        
+
         .quote-text::before {
-            content: '“'; /* Left quote mark */
-            font-size: 2.5rem; /* Larger size for the left quote */
+            content: '“';
+            font-size: 2.5rem;
             position: absolute;
             left: -10px;
             top: -10px;
-            color: #007bff; /* Accent color for the quote mark */
+            color: #007bff;
         }
-        
+
         .quote-text::after {
-            content: '”'; /* Right quote mark */
-            font-size: 2.5rem; /* Larger size for the right quote */
+            content: '”';
+            font-size: 2.5rem;
             position: absolute;
             right: -10px;
             bottom: -10px;
-            color: #007bff; /* Accent color for the quote mark */
+            color: #007bff;
         }
-        /* Responsive design considerations */
+
+        /* User Quote Card Styles */
+        .user-quote-card {
+            background: linear-gradient(145deg, rgba(240, 255, 240, 0.9), rgba(220, 240, 220, 0.9));
+            border-left: 6px solid #28a745;
+            padding: 25px 35px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            text-align: left;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .user-quote-card .quote-text {
+            font-style: italic;
+            color: #333;
+            font-family: 'Georgia', serif;
+            font-weight: 600;
+            letter-spacing: 1px;
+            line-height: 1.7;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.15);
+            margin: 0;
+            padding: 10px 20px;
+            position: relative;
+            text-align: center;
+        }
+
+        .user-quote-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .user-quote-card .quote-text:hover {
+            color: #28a745;
+            font-style: normal;
+        }
+
+        /* Add Quote Section */
+        .add-quote-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 12px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+            width: 100%;
+            max-width: 98%;
+        }
+
+        .life-lessons-text {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #28a745;
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: 3px;
+            text-align: center;
+            line-height: 1.4;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 10px 0;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #28a745, #6cbb5b);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .quote-form {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50%;
+        }
+
+        .add-quote-container textarea {
+            width: 100%;
+            max-width: 800px;
+            height: 60px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 1rem;
+            margin-right: 15px;
+            resize: none;
+        }
+
+        .add-quote-container button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(90deg, #007bff, #0056b3);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            min-width: 120px;
+        }
+
+        .add-quote-container button:hover {
+            background: linear-gradient(90deg, #0056b3, #004085);
+            transform: translateY(-2px);
+        }
+
+        .masonry-quotes {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 cards per row */
+            gap: 20px; /* Spacing between cards */
+            padding: 20px;
+        }
+        .delete-button {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        
+        .delete-button:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.5);
+        }
+        /* Responsive Design */
         @media (max-width: 600px) {
-            button {
-                width: 100%; /* Full width buttons on smaller screens */
+            .add-quote-container {
+                flex-direction: column;
+                align-items: stretch;
             }
-        }
-        @media (max-width: 1200px) {
-            .masonry-quotes {
-                grid-template-columns: repeat(4, 1fr); /* 4 columns for medium screens */
+
+            .life-lessons-text {
+                flex-basis: 100%;
+                margin-bottom: 10px;
             }
-        }
-        
-        @media (max-width: 900px) {
-            .masonry-quotes {
-                grid-template-columns: repeat(3, 1fr); /* 3 columns for smaller screens */
+
+            .quote-form {
+                width: 100%;
+                flex-direction: column;
             }
-        }
-        
-        @media (max-width: 600px) {
-            .masonry-quotes {
-                grid-template-columns: repeat(2, 1fr); /* 2 columns for mobile screens */
+
+            .add-quote-container textarea {
+                margin-right: 0;
+                margin-bottom: 10px;
             }
-        }
-        
-        @media (max-width: 400px) {
-            .masonry-quotes {
-                grid-template-columns: 1fr; /* 1 column for very small screens */
+
+            .add-quote-container button {
+                width: 100%;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="main-container">
         <h1>Welcome, {{ user.username }}</h1>
 
-        <button class="primary-button" onclick="window.location.href='{% url 'input' %}'">Go to Input Page</button>
-        <button class="secondary-button" onclick="window.location.href='{% url 'chart' %}'">Go to Chart Page</button>
+        <button class="button button--primary" onclick="window.location.href='{% url 'input' %}'">Go to Input Page</button>
+        <button class="button button--secondary" onclick="window.location.href='{% url 'chart' %}'">Go to Chart Page</button>
 
-        <!-- Download Button with Confirmation Dialog -->
-        <button class="primary-button" id="download-btn">Download Excel</button>
-        
-        <!-- Calendar Button -->
-        <button class="secondary-button" onclick="window.location.href='{% url 'calendar' %}'">Go to Calendar Page</button>
+        <button class="button button--download" id="download-btn">Download Excel</button>
 
-
+        <button class="button button--secondary" onclick="window.location.href='{% url 'calendar' %}'">Go to Calendar Page</button>
 
         <br>
-        <!-- Logout Button -->
-        <button class="logout-button" onclick="window.location.href='{% url 'logout' %}'">Logout</button>
+        <button class="button button--logout" onclick="window.location.href='{% url 'logout' %}'">Logout</button>
     </div>
 
-    <!-- Quotes Section -->
-    <div class="masonry-quotes">
+    <div class="quotes-grid">
         <div class="quote-card">
             <p class="quote-text">The only way to do great work is to love what you do.</p>
         </div>
@@ -223,7 +342,52 @@
         </div>
     </div>
 
+    <div class="add-quote-container">
+        <div class="life-lessons-text">... My Life Lessons</div>
+        <form method="POST" class="quote-form">
+            {% csrf_token %}
+            <textarea name="text" placeholder="Add a new quote..." required></textarea>
+            <button type="submit">Add Quote</button>
+        </form>
+    </div>
 
+
+
+    <div class="masonry-quotes">
+        {% for quote in quotes %}
+        <div class="quote-card user-quote-card">
+            <p class="quote-text">{{ quote.text }}</p>
+            <button class="delete-button" onclick="confirmDelete({{ quote.id }})">X</button>
+        </div>
+        {% endfor %}
+    </div>
+    <script>
+        function confirmDelete(quoteId) {
+            if (confirm("Are you sure you want to delete this quote?")) {
+                fetch(`/delete-quote/${quoteId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}' // Include CSRF token
+                    },
+                    body: JSON.stringify({ id: quoteId })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Remove the quote card from the DOM
+                        document.querySelector(`.user-quote-card[data-id="${quoteId}"]`).remove();
+                    } else {
+                        alert("Failed to delete the quote. Please try again.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error deleting the quote:", error);
+                    alert("An error occurred. Please try again.");
+                });
+            }
+        }
+    </script>
+    
     <!-- JavaScript to handle confirmation dialog -->
     <script>
         document.getElementById("download-btn").addEventListener("click", function() {
@@ -232,5 +396,6 @@
             }
         });
     </script>
+
 </body>
 </html>

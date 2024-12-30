@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect
-from .forms import UserInputForm
-from .models import UserInput
+from .forms import UserInputForm, QuoteForm
+from .models import UserInput, Quote
 from django.utils import timezone
 from django.db.models import Sum
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 import openpyxl
 from openpyxl.utils import get_column_letter
@@ -40,8 +42,27 @@ def logout_view(request):
 # Home View (after login)
 @login_required
 def home_view(request):
-    return render(request, 'monitor/home.html')
+    quotes = Quote.objects.all()  # Retrieve all quotes from the database
+    form = QuoteForm()
 
+    if request.method == "POST":
+        form = QuoteForm(request.POST)
+        if form.is_valid():
+            form.save()  # Save the new quote to the database
+            return redirect('home')  # Redirect to the home page after saving the quote
+
+    return render(request, 'monitor/home.html', {'quotes': quotes, 'form': form})
+
+@csrf_exempt
+def delete_quote(request, id):
+    if request.method == "POST":
+        try:
+            quote = Quote.objects.get(id=id)
+            quote.delete()
+            return JsonResponse({"success": True})
+        except Quote.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Quote not found"})
+    return JsonResponse({"success": False, "error": "Invalid request method"})
 
 # Input View
 @login_required  # Ensure that only authenticated users can submit data
@@ -231,3 +252,4 @@ def export_to_excel_view(request):
     workbook.save(response)
     
     return response
+
