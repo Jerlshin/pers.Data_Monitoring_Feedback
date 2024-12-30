@@ -8,179 +8,181 @@
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"> <!-- Updated font -->
     <style>
         body {
-            background: url('https://www.transparenttextures.com/patterns/light-sand.png'); /* Subtle background texture */
-            font-family: 'Roboto', sans-serif; /* Updated to Roboto font */
-            background-color: #f1f3f5; /* Fallback color */
-            background-blend-mode: overlay; /* Blend mode for better readability */
-            padding: 20px; /* Padding for body */
+            background: linear-gradient(to right, #eef2f3, #8e9eab); /* Subtle gradient */
+            font-family: 'Roboto', sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
-        /* Add these to your existing style section */
-        .form-control {
-            border: 1px solid #ced4da;
-            border-radius: 5px;
-            padding: 10px;
-            width: 100%;
-            margin-top: 5px;
-        }
-
-        .form-check-input {
-            margin-top: 0.3rem;
-        }
-
-        /* Style for Django form errors */
-        .errorlist {
-            color: #dc3545;
-            list-style: none;
-            padding-left: 0;
-            margin-bottom: 0;
-            font-size: 0.875rem;
-        }
+    
         .container {
-            max-width: 700px;
-            margin-top: 50px;
-            padding: 30px;
-            border-radius: 10px;
-            background-color: #ffffff;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-            opacity: 0;
-            animation: fadeIn 1s forwards;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 40px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
+    
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
         }
+    
         .love-header {
             font-family: 'Great Vibes', cursive;
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             color: #e63946;
             text-align: center;
-            margin-bottom: 5px;
-            animation: slideDown 1s ease-in-out;
+            margin-bottom: 10px;
         }
-        @keyframes slideDown {
-            from {
-                transform: translateY(-20px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-        .and-text {
-            font-size: 15px; /* Smaller font size for "and" */
-            margin: 0; /* Remove default margin */
-            line-height: 0; /* Adjust line height if necessary */
-            margin-bottom: 5px; 
-        }
+        
+    
         h1 {
-            font-size: 2.5rem; /* Larger title for emphasis */
-            margin-bottom: 20px; /* Space below the title */
-            color: #343a40; /* Dark color for better readability */
-            text-align: center; /* Center the title */
-            font-family: 'Roboto', sans-serif; /* Professional font */
-            font-weight: 700; /* Bold font for the title */
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
         }
+    
+        .form-check {
+            margin: 10px 0;
+        }
+    
         .form-check-label {
-            font-weight: 500; /* Medium weight for labels */
-            color: #495057; /* Darker label color */
+            font-size: 1.1rem;
+            color: #495057;
+            margin-left: 8px;
         }
+    
+        .form-group label {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 5px;
+            display: block;
+            color: #555;
+        }
+    
+        .form-control {
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 1rem;
+        }
+    
         .btn {
-            font-size: 1rem; /* Consistent button font size */
-            padding: 12px 30px; /* Padding for buttons */
-            border-radius: 25px; /* Rounded buttons */
-            font-weight: 700; /* Bold button text */
-            transition: background-color 0.3s ease, transform 0.1s ease;
+            font-size: 1.1rem;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
+    
         .btn-primary {
-            background-color: #007bff; /* Primary button color */
-            border: none; /* No border */
+            background-color: #007bff;
+            color: #fff;
+            border: none;
         }
+    
         .btn-primary:hover {
-            background-color: #0056b3; /* Darker shade on hover */
-            transform: scale(1.05); 
+            background-color: #0056b3;
+            transform: scale(1.05);
         }
+    
         .btn-secondary {
-            background-color: #6c757d; /* Secondary button color */
-            border: none; /* No border */
+            background-color: #6c757d;
+            color: #fff;
+            border: none;
+            margin-left: 20px;
         }
+    
         .btn-secondary:hover {
-            background-color: #5a6268; /* Darker shade on hover */
-            transform: scale(1.05); 
+            background-color: #5a6268;
+            transform: scale(1.05);
         }
-        textarea {
-            resize: none; /* Disable resizing */
+    
+        .quote-section {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f0f9ff;
+            border-left: 5px solid #007bff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
         }
-        /* Logout Button Styles */
-        .logout-button {
+    
+        .peace-quote {
+            font-size: 1.4rem;
+            font-style: italic;
+            color: #007bff;
+            margin: 0;
+        }
+    
+        .quote-author {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #555;
+            margin-top: 10px;
+        }
+    
+        .toggle-select-button {
+            float: right;
+            background-color: #28a745;
+            color: #fff;
+            font-size: 1rem;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+    
+        .toggle-select-button:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+    
+        .logout-button, .home-button {
             position: fixed;
             top: 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+    
+        .logout-button {
             right: 20px;
             background-color: #e74c3c;
             color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 25px;
-            font-size: 1em;
-            font-weight: 700; /* Bold text for logout */
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.1s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
+    
         .logout-button:hover {
             background-color: #c0392b;
         }
-        .logout-button:active {
-            transform: translateY(2px); /* Button press effect */
-        }
-        /* Home Button Styles */
+    
         .home-button {
-            position: fixed;
-            top: 20px;
             left: 20px;
             background-color: #007bff;
             color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 25px;
-            font-size: 1em;
-            font-weight: 700; /* Bold text for home */
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.1s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
+    
         .home-button:hover {
             background-color: #0056b3;
         }
-        .home-button:active {
-            transform: translateY(2px); /* Button press effect */
+    
+        textarea {
+            resize: none;
         }
-        /* Quote Styles */
-        .quote-section {
-            margin-top: 30px; /* Space above the quote */
-            padding: 20px;
-            background-color: #f0fff0; /* Light green background */
-            border-radius: 10px; /* Rounded corners */
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Shadow for depth */
-            text-align: center; /* Center the quote */
-        }
-        .peace-quote {
-            font-family: 'Roboto', sans-serif; /* Peaceful font */
-            font-size: 1.5rem; /* Larger font size for quotes */
-            color: #4CAF50; /* Green color */
-            margin: 0; /* Remove margin for better alignment */
-        }
-        .quote-author {
-            font-family: 'Roboto', sans-serif; /* Same peaceful font for consistency */
-            font-size: 1.2rem; /* Slightly smaller font size for author */
-            color: #333; /* Darker color for author */
-            margin-top: 5px; /* Space above author */
-        }
-        /* Additional Quote Styles */
         .additional-quote {
             margin-top: 20px; /* Space above the additional quote */
             font-family: 'Roboto', sans-serif; /* Consistent font */
@@ -201,15 +203,6 @@
                 transform: translateY(0);
                 opacity: 1;
             }
-        }
-        .toggle-select-button {
-            font-size: 1rem;
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-weight: 700;
-            transition: background-color 0.3s ease;
-            margin-bottom: 20px;
-            float: right;
         }
     </style>
 </head>

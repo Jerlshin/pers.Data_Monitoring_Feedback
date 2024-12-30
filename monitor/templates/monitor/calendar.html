@@ -14,6 +14,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            background: linear-gradient(to right, #eef2f3, #8e9eab); /* Subtle gradient */
         }
 
         .home-button, .logout-button {
@@ -77,6 +78,7 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
+            align-items: center
         }
 
         .calendar-container {
@@ -84,6 +86,8 @@
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             padding: 20px;
+            width: 80%;
+            margin-top: 10px;
         }
 
         .calendar-header {
@@ -290,9 +294,9 @@
             display: flex;
             justify-content: space-between;
             gap: 20px;
-            width: 100%;   /* Ensure the container takes full width */
+            width: 110%;   /* Ensure the container takes full width */
             max-width: 2000px;  /* You can adjust this value for desired max-width */
-            height: 500px;  /* Set specific height to make the container bigger */
+            height: 600px;  /* Set specific height to make the container bigger */
             margin-top: 20px; /* Adjust spacing if necessary */
         }
 
@@ -314,6 +318,7 @@
         }
 
         .task-list {
+            height: 100%;
             margin-top: 20px;
             flex-grow: 1;
             overflow-y: auto;
@@ -341,6 +346,9 @@
             border-radius: 4px;
             cursor: pointer;
             font-size: 14px;
+            width: 60px;  /* Set a fixed width */
+            height: 30px; 
+            margin-left: 10px;
         }
         
         .task-list li button:hover {
@@ -784,10 +792,10 @@
             event.preventDefault();
             const todoTask = todoInput.value.trim();
             if (todoTask === '') return;
-        
-            const longTermTasks = JSON.parse(localStorage.getItem('longTermTasks')) || []; 
-            longTermTasks.push({ name: todoTask }); 
-            localStorage.setItem('longTermTasks', JSON.stringify(longTermTasks));
+            
+            const longTermTasks = JSON.parse(localStorage.getItem('todoListTasks')) || []; 
+            longTermTasks.push({ name: todoTask }); // Store under 'todoListTasks'
+            localStorage.setItem('todoListTasks', JSON.stringify(longTermTasks));
             loadTodoTasks();
             todoInput.value = '';
         };
@@ -795,7 +803,7 @@
         // Load To-Do List Tasks
         const loadTodoTasks = () => {
             todoList.innerHTML = '';
-            const todoTasks = JSON.parse(localStorage.getItem('longTermTasks')) || [];
+            const todoTasks = JSON.parse(localStorage.getItem('todoListTasks')) || [];  // Load from 'todoListTasks'
             todoTasks.forEach((task, index) => {
                 const taskItem = document.createElement('li');
                 taskItem.textContent = task.name;
@@ -809,9 +817,9 @@
 
         // Delete Long-Term Task from To-Do List
         const deleteTodoTask = (index) => {
-            const todoTasks = JSON.parse(localStorage.getItem('longTermTasks')) || [];
+            const todoTasks = JSON.parse(localStorage.getItem('todoListTasks')) || [];
             todoTasks.splice(index, 1);
-            localStorage.setItem('longTermTasks', JSON.stringify(todoTasks));
+            localStorage.setItem('todoListTasks', JSON.stringify(todoTasks));  // Update 'todoListTasks'
             loadTodoTasks();
         };
 
@@ -819,37 +827,40 @@
         const loadConsolidatedTasks = () => {
             consolidatedTaskList.innerHTML = '';
             const tasks = [];
-            const longTermTasks = JSON.parse(localStorage.getItem('longTermTasks')) || [];
+
+            // Load long-term tasks from the special 'todoListTasks' key
+            const longTermTasks = JSON.parse(localStorage.getItem('longTermTasks')) || [];  // This is for calendar-based tasks
             longTermTasks.forEach(task => tasks.push({ ...task, date: 'Long-Term' }));
-        
+
+            // Load tasks from calendar-based keys (i.e., by date)
             Object.keys(localStorage).forEach(key => {
-                if (new Date(key).toString() !== 'Invalid Date') {
+                if (new Date(key).toString() !== 'Invalid Date' && key !== 'todoListTasks') {  // Exclude 'todoListTasks'
                     const dateTasks = JSON.parse(localStorage.getItem(key));
                     dateTasks.forEach(task => {
                         tasks.push({ name: task.name, date: key, priority: task.priority || 'important' });
                     });
                 }
             });
-        
+
             tasks.forEach(task => {
                 const taskItem = document.createElement('li');
                 taskItem.classList.add('consolidated-task-item', task.priority);
-            
+
                 // Task Name
                 const taskName = document.createElement('span');
                 taskName.textContent = task.name;
                 taskName.classList.add('consolidated-task-name');
-            
+
                 // Task Date
                 const taskDate = document.createElement('span');
                 taskDate.textContent = task.date;
                 taskDate.classList.add('consolidated-task-date');
-            
+
                 // Priority Menu
                 const priorityMenu = document.createElement('div');
                 priorityMenu.classList.add('priority-menu');
                 const priorities = ['highly-important', 'medium-important', 'important'];
-            
+
                 priorities.forEach(priority => {
                     const option = document.createElement('div');
                     option.classList.add('priority-option');
@@ -861,27 +872,28 @@
                     });
                     priorityMenu.appendChild(option);
                 });
-            
+
                 // Append elements to the task item
                 taskItem.appendChild(taskName);
                 taskItem.appendChild(taskDate);
                 taskItem.appendChild(priorityMenu);
-            
+
                 // Event listener for task selection and menu toggle
                 taskItem.addEventListener('click', (e) => {
                     e.stopPropagation();
                     toggleTaskSelection(taskItem); // Highlight the task
                     togglePriorityMenu(taskItem, priorityMenu); // Show the priority menu
                 });
-            
+
                 consolidatedTaskList.appendChild(taskItem);
             });
-        
+
             // Close all open menus when clicking outside
             document.addEventListener('click', () => {
                 closePriorityMenu();
             });
         };
+
         
         // Toggle the visibility of the priority menu
         function togglePriorityMenu(taskItem, priorityMenu) {

@@ -14,6 +14,7 @@
             background-position: center; /* Center the image */
             padding: 20px;
             color: #333; /* Dark text for readability */
+            background: linear-gradient(to right, #eef2f3, #8e9eab); /* Subtle gradient */
         }
         /* Container for the main content */
         .container {
@@ -79,33 +80,91 @@
             transform: translateY(-2px);
         }
         /* Quotes section styles */
-        .quotes-section {
-            margin-top: 40px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px; /* Space between quotes */
+        .masonry-quotes {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); /* Set exactly 5 columns */
+            gap: 20px;
+            padding: 20px;
         }
         /* Individual quote card styles */
         .quote-card {
-            background-color: rgba(231, 243, 254, 0.9); /* Slightly transparent light blue background for quotes */
-            border-left: 5px solid #007bff; /* Distinct left border */
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s; /* Animation for hover effect */
+            background: linear-gradient(145deg, rgba(231, 243, 254, 0.9), rgba(255, 255, 255, 0.9)); /* Subtle gradient for a modern feel */
+            border-left: 6px solid #007bff; /* Slightly thicker border for emphasis */
+            padding: 25px 30px; /* Increased padding for more spacious feel */
+            border-radius: 12px; /* Rounded corners for a softer, more polished look */
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1), 0 2px 10px rgba(0, 0, 0, 0.05); /* Deeper shadow for more lift */
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover effects */
+            text-align: center;
+            position: relative; /* For better control over hover effects */
         }
+        
+        .quote-card:hover {
+            transform: translateY(-5px); /* Slight lift effect */
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15), 0 4px 15px rgba(0, 0, 0, 0.1); /* Stronger shadow on hover */
+        }
+        
+        
+
         .quote-card:hover {
             transform: scale(1.02); /* Slightly enlarge on hover */
         }
         .quote-text {
             font-style: italic; /* Italicized text for quotes */
-            color: #555; /* Slightly muted text color */
+            color: #333; /* Darker text for better readability */
+            font-family: 'Georgia', serif; /* Elegant serif font for quotes */
+            font-weight: 500; /* Slightly bold to enhance visibility */
+            letter-spacing: 0.5px; /* Subtle letter spacing for clarity */
+            line-height: 1.6; /* Increased line height for readability */
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
             margin: 0;
+            padding: 10px 20px; /* Add padding to create breathing space */
+            position: relative; /* To position quote marks */
+        }
+        
+        .quote-text::before {
+            content: '“'; /* Left quote mark */
+            font-size: 2.5rem; /* Larger size for the left quote */
+            position: absolute;
+            left: -10px;
+            top: -10px;
+            color: #007bff; /* Accent color for the quote mark */
+        }
+        
+        .quote-text::after {
+            content: '”'; /* Right quote mark */
+            font-size: 2.5rem; /* Larger size for the right quote */
+            position: absolute;
+            right: -10px;
+            bottom: -10px;
+            color: #007bff; /* Accent color for the quote mark */
         }
         /* Responsive design considerations */
         @media (max-width: 600px) {
             button {
                 width: 100%; /* Full width buttons on smaller screens */
+            }
+        }
+        @media (max-width: 1200px) {
+            .masonry-quotes {
+                grid-template-columns: repeat(4, 1fr); /* 4 columns for medium screens */
+            }
+        }
+        
+        @media (max-width: 900px) {
+            .masonry-quotes {
+                grid-template-columns: repeat(3, 1fr); /* 3 columns for smaller screens */
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .masonry-quotes {
+                grid-template-columns: repeat(2, 1fr); /* 2 columns for mobile screens */
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .masonry-quotes {
+                grid-template-columns: 1fr; /* 1 column for very small screens */
             }
         }
     </style>
@@ -131,38 +190,39 @@
     </div>
 
     <!-- Quotes Section -->
-    <div class="quotes-section">
+    <div class="masonry-quotes">
         <div class="quote-card">
-            <p class="quote-text">"The only way to do great work is to love what you do."</p>
+            <p class="quote-text">The only way to do great work is to love what you do.</p>
         </div>
         <div class="quote-card">
-            <p class="quote-text">"Discipline is the bridge between goals and accomplishment."</p>
+            <p class="quote-text">Discipline is the bridge between goals and accomplishment.</p>
         </div>
         <div class="quote-card">
-            <p class="quote-text">"Success is not the key to happiness. Happiness is the key to success. If you love what you are doing, you will be successful."</p>
+            <p class="quote-text">Success is not the key to happiness. Happiness is the key to success. If you love what you are doing, you will be successful.</p>
         </div>
         <div class="quote-card">
-            <p class="quote-text">"Your life does not get better by chance, it gets better by change."</p>
+            <p class="quote-text">Your life does not get better by chance, it gets better by change.</p>
         </div>
         <div class="quote-card">
-            <p class="quote-text">"Believe you can and you're halfway there."</p>
+            <p class="quote-text">Believe you can and you're halfway there.</p>
         </div>
         <div class="quote-card">
-            <p class="quote-text">"For I know the plans I have for you, plans to prosper you and not to harm you, plans to give you hope and a future."</p>
+            <p class="quote-text">For I know the plans I have for you, plans to prosper you and not to harm you, plans to give you hope and a future.</p>
         </div>
         <div class="quote-card">
-            <p class="quote-text">"I can do all things through Christ who strengthens me."</p>
+            <p class="quote-text">I can do all things through Christ who strengthens me.</p>
         </div>
         <div class="quote-card">
-            <p class="quote-text">"Trust in the Lord with all your heart and lean not on your own understanding."</p>
+            <p class="quote-text">Trust in the Lord with all your heart and lean not on your own understanding.</p>
         </div>
         <div class="quote-card">
-            <p class="quote-text">"And we know that in all things God works for the good of those who love him."</p>
+            <p class="quote-text">And we know that in all things God works for the good of those who love him.</p>
         </div>
         <div class="quote-card">
-            <p class="quote-text">"The Lord is my shepherd; I shall not want."</p>
+            <p class="quote-text">The Lord is my shepherd; I shall not want.</p>
         </div>
     </div>
+
 
     <!-- JavaScript to handle confirmation dialog -->
     <script>

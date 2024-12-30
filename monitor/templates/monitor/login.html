@@ -11,6 +11,7 @@
             background-image: url('{% static "images/login_page_bg.jpg" %}');
             background-size: cover;
             background-position: center;
+            background: linear-gradient(to right, #eef2f3, #8e9eab); /* Subtle gradient */
             margin: 0;
             padding: 0;
             display: flex;
@@ -27,121 +28,109 @@
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(230, 247, 255, 0.9)); /* Slightly lighter gradient */
             border-radius: 15px; /* Rounded corners */
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3); /* Deeper shadow for a floating effect */
-            transition: transform 0.3s; /* Smooth scaling effect */
+            transition: transform 0.3s ease; /* Smooth scaling effect */
         }
 
         .login-container:hover {
-            transform: scale(1.008); /* Slight zoom effect on hover */
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
         }
 
         h2 {
             text-align: center;
             margin-bottom: 20px;
-            color: #007bff;
-            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3); /* Enhanced shadow for the title */
+            color: #333;
+            font-size: 1.8rem;
+            letter-spacing: 1px;
         }
 
         .form-group {
-            margin-bottom: 20px; /* Increased space between fields */
+            margin-bottom: 20px;
         }
 
         .form-group label {
             display: block;
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            color: #555;
         }
 
         .form-group input {
             width: 100%;
-            padding: 12px; /* Increased padding for input */
-            border: 2px solid #ccc; /* Thicker border */
-            border-radius: 5px;
-            transition: border 0.3s, box-shadow 0.3s; /* Smooth transition for focus */
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            color: #333;
+            transition: border 0.3s ease, box-shadow 0.3s ease;
         }
 
         .form-group input:focus {
-            border-color: #007bff; /* Highlight border on focus */
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Glow effect on focus */
+            border-color: #007bff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.4);
             outline: none;
         }
 
         .password-wrapper {
-            display: flex; /* Use flexbox to align items */
-            align-items: center; /* Center vertically */
-            justify-content: space-between; /* Space out input and toggle */
+            display: flex;
+            align-items: center;
         }
 
-        .password-wrapper input[type="password"] {
-            flex-grow: 1; /* Allow the input to grow and take available space */
-            margin-right: 10px; /* Space between input and toggle */
+        .password-wrapper input {
+            flex-grow: 1;
+        }
+
+        .toggle-password {
+            margin-left: 10px;
+        }
+
+        .toggle-password input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .toggle-label {
+            font-size: 0.9rem;
+            color: #007bff;
+            cursor: pointer;
+            margin-left: 5px;
         }
 
         .btn {
             width: 100%;
-            padding: 12px; /* Increased padding for button */
-            background-color: #007bff;
+            padding: 12px;
+            background: #007bff;
             border: none;
-            border-radius: 5px;
-            color: #fff;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
             cursor: pointer;
-            transition: background 0.3s, transform 0.1s; /* Transition for background and transform */
-            font-weight: bold; /* Bold text */
+            transition: 0.3s ease, transform 0.2s ease;
         }
 
         .btn:hover {
-            background-color: #0056b3;
-            transform: translateY(-2px); /* Lift effect on hover */
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
         }
 
         .error {
             color: red;
             text-align: center;
-            margin-bottom: 15px; /* Space below error messages */
+            margin-bottom: 15px;
         }
 
-        .toggle-password {
-            display: flex;
-            align-items: center;
+        @media (max-width: 480px) {
+            .login-container {
+                width: 90%;
+                padding: 20px;
+            }
         }
-
-        .toggle-password input[type="checkbox"] {
-            appearance: none;
-            -webkit-appearance: none;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #007bff;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background 0.3s, border-color 0.3s;
-        }
-
-        .toggle-password input[type="checkbox"]:checked {
-            background-color: #007bff;
-            border-color: #007bff;
-        }
-
-        .toggle-password input[type="checkbox"]:checked::after {
-            content: '✔';
-            color: white;
-            position: relative;
-            font-size: 16px;
-            left: 2px;
-            top: -2px;
-        }
-
-        .toggle-label {
-            margin-left: 5px; /* Space between checkbox and label */
-            font-size: 0.9em;
-            color: #007bff;
-            cursor: pointer;
-            user-select: none;
-            transition: color 0.3s;
-        }
-
-        .toggle-label:hover {
-            color: #0056b3;
-        }
-        
     </style>
 </head>
 <body>
