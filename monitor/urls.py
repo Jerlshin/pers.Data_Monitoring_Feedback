@@ -20,6 +20,8 @@ urlpatterns = [
     
     # To make frontend interact with the SQLite through these API endpoints
     path('api/', include(router.urls)),
+    path('api/load-tasks/', views.load_tasks, name='load-tasks'),
+
 ]
 
 
