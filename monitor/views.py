@@ -12,6 +12,30 @@ from django.http import HttpResponse
 import openpyxl
 from openpyxl.utils import get_column_letter
 
+# provides basic CRUD functionality such as GET, POST, DELETE, PUT
+from rest_framework.viewsets import ModelViewSet
+
+# more flexibility in customizing the API behavior. Require manual defining of logic for each HTTP method
+from rest_framework.views import APIView
+from .models import CalendarTask, TodoTask
+from .serializers import CalendarTaskSerializer, TodoTaskSerializer
+from rest_framework.permissions import AllowAny
+
+
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+
+# provides endpoings for GET, POST, PUT, DELETE
+class CalendarTaskViewSet(ModelViewSet):
+    permission_classes = [AllowAny]
+    queryset = CalendarTask.objects.all()
+    serializer_class = CalendarTaskSerializer
+
+class TodoTaskViewSet(ModelViewSet):
+    queryset = TodoTask.objects.all()
+    serializer_class = TodoTaskSerializer
+    permission_classes = [AllowAny]  # allow all users to access
+
+
 
 @login_required
 def calendar_view(request):

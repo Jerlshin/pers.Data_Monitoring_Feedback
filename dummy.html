@@ -1,490 +1,363 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Calendar</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <style>
-        /* Basic Styling for the Page */
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f0f4f8;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .calendar {
-            width: 100%;
-            max-width: 900px;
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-
-        .calendar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            background-color: #007bff;
-            color: #ffffff;
-        }
-
-        .calendar-header button {
-            background-color: transparent;
-            border: none;
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
-        }
-
-        .calendar-header button:hover {
-            opacity: 0.7;
-        }
-
-        .calendar-header h2 {
-            font-size: 24px;
-            font-weight: 500;
-            margin: 0;
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 1px;
-            background-color: #f1f1f1;
-        }
-
-        .calendar-cell {
-            background-color: #ffffff;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            position: relative;
-            transition: background-color 0.3s, transform 0.3s;
-        }
-
-        .calendar-cell:hover {
-            background-color: #f0f8ff;
-            transform: scale(1.05);
-        }
-
-        .calendar-cell.inactive {
-            color: #bbb;
-        }
-
-        .calendar-cell .task-indicator {
-            display: flex;
-            justify-content: center;
-            gap: 6px;
-            margin-top: 8px;
-        }
-
-        .calendar-cell .task-indicator span {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            transition: all 0.3s;
-        }
-
-        .calendar-cell .task-indicator .normal {
-            background-color: #2196f3;
-        }
-
-        .calendar-cell .task-indicator .day {
-            background-color: #fb8c00;
-        }
-
-        .calendar-cell.task-day-normal .task-indicator .normal {
-            background-color: #0d47a1;
-        }
-
-        .calendar-cell.task-day-day .task-indicator .day {
-            background-color: #e65100;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.3s;
-        }
-
-        .modal-content {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .modal-content h3 {
-            margin-bottom: 20px;
-            font-size: 20px;
-            font-weight: 500;
-        }
-
-        .modal-content form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .modal-content input[type="text"] {
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-
-        .modal-content input[type="text"]:focus {
-            border-color: #007bff;
-        }
-
-        .modal-content button {
-            padding: 12px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-
-        .modal-content button:hover {
-            background-color: #0056b3;
-        }
-
-        /* To-Do List Styling */
-        .todo-container, .consolidated-container {
-            width: 100%;
-            max-width: 900px;
-            margin-top: 30px;
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-        }
-
-        .todo-container, .consolidated-container {
-            padding: 20px;
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-        }
-
-        .todo-container {
-            flex-direction: column;
-            width: 45%;
-        }
-
-        .consolidated-container {
-            flex-direction: column;
-            width: 45%;
-        }
-
-        .todo-container input, .todo-container button {
-            width: 100%;
-        }
-
-        .task-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .task-list li {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px;
-            background-color: #f8f9fa;
-            margin: 8px 0;
-            border-radius: 4px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .task-list button {
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .task-list button:hover {
-            background-color: #b02a37;
-        }
-
-    </style>
-</head>
-<body>
-    <!-- Calendar Section -->
-    <div class="calendar">
-        <div class="calendar-header">
-            <button id="prevMonth">&laquo;</button>
-            <h2 id="monthYear"></h2>
-            <button id="nextMonth">&raquo;</button>
-        </div>
-        <div class="calendar-grid" id="calendarGrid"></div>
-    </div>
-
-    <!-- To-Do List Section -->
-    <div class="todo-container">
-        <h3>To-Do List (Long-Term Goals)</h3>
-        <form id="todoForm">
-            <input type="text" id="todoInput" placeholder="Enter long-term task..." required>
-            <button type="submit">Add to To-Do List</button>
-        </form>
-        <ul id="todoList" class="task-list"></ul>
-    </div>
-
-    <!-- Consolidated Tasks Section -->
-    <div class="consolidated-container">
-        <h3>Consolidated Tasks</h3>
-        <ul id="consolidatedTaskList" class="task-list"></ul>
-    </div>
-
-    <!-- Modal for Task Input -->
-    <div class="modal" id="taskModal">
-        <div class="modal-content">
-            <h3 id="modalTitle">Tasks for </h3>
-            <form id="taskForm">
-                <input type="text" id="taskName" placeholder="Task Name" required>
-                <div>
-                    <label>Task Type:</label>
-                    <label>
-                        <input type="radio" name="taskType" value="normal" checked> Normal
-                    </label>
-                    <label>
-                        <input type="radio" name="taskType" value="day"> Day
-                    </label>
-                </div>
-                <button type="submit">Add Task</button>
-            </form>
-            <ul class="task-list" id="taskList"></ul>
-            <button onclick="closeModal()">Close</button>
-        </div>        
-    </div>
-
-    <script>
-        // DOM Elements
-        const calendarGrid = document.getElementById('calendarGrid');
-        const monthYear = document.getElementById('monthYear');
-        const taskModal = document.getElementById('taskModal');
-        const modalTitle = document.getElementById('modalTitle');
-        const taskList = document.getElementById('taskList');
-        const taskForm = document.getElementById('taskForm');
-        const taskNameInput = document.getElementById('taskName');
-        const taskTypeInputs = document.getElementsByName('taskType');
-        const todoInput = document.getElementById('todoInput');
-        const todoList = document.getElementById('todoList');
-        const consolidatedTaskList = document.getElementById('consolidatedTaskList');
-        const todoForm = document.getElementById('todoForm');
-
-        let currentDate = new Date();
-        let selectedDate = null;
-
-        // Render the Calendar
-        const renderCalendar = () => {
-            calendarGrid.innerHTML = '';
-            const year = currentDate.getFullYear();
-            const month = currentDate.getMonth();
-            monthYear.textContent = `${currentDate.toLocaleString('default', { month: 'long' })} ${year}`;
-
-            const firstDay = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-            for (let i = 0; i < firstDay; i++) {
-                const emptyCell = document.createElement('div');
-                emptyCell.classList.add('calendar-cell', 'inactive');
-                calendarGrid.appendChild(emptyCell);
-            }
-
-            for (let day = 1; day <= daysInMonth; day++) {
-                const dayCell = document.createElement('div');
-                dayCell.classList.add('calendar-cell');
-                dayCell.textContent = day;
-
-                const taskDate = new Date(year, month, day).toDateString();
-                const tasks = JSON.parse(localStorage.getItem(taskDate)) || [];
-
-                if (tasks.length > 0) {
-                    const indicator = document.createElement('div');
-                    indicator.classList.add('task-indicator');
-                    let hasNormalTask = false;
-                    let hasDayTask = false;
-
-                    tasks.forEach(task => {
-                        if (task.type === 'normal') hasNormalTask = true;
-                        if (task.type === 'day') hasDayTask = true;
-                    });
-
-                    if (hasNormalTask) {
-                        const normalDot = document.createElement('span');
-                        normalDot.classList.add('normal');
-                        indicator.appendChild(normalDot);
-                        dayCell.classList.add('task-day-normal');
-                    }
-                    if (hasDayTask) {
-                        const dayDot = document.createElement('span');
-                        dayDot.classList.add('day');
-                        indicator.appendChild(dayDot);
-                        dayCell.classList.add('task-day-day');
-                    }
-
-                    dayCell.appendChild(indicator);
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
                 }
-
-                dayCell.addEventListener('click', () => openModal(day));
-                calendarGrid.appendChild(dayCell);
             }
-        };
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+    // DOM Elements
+    const calendarGrid = document.getElementById('calendarGrid');
+    const monthYear = document.getElementById('monthYear');
+    const todoInput = document.getElementById('todoInput');
+    const todoList = document.getElementById('todoList');
+    const consolidatedTaskList = document.getElementById('consolidatedTaskList');
+    const todoForm = document.getElementById('todoForm');
+    const taskModal = document.getElementById('taskModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const taskList = document.getElementById('taskList');
+    const taskForm = document.getElementById('taskForm');
+    const taskNameInput = document.getElementById('taskName');
+    const taskTypeInputs = document.getElementsByName('taskType');
+    let currentDate = new Date();
+    let selectedDate = null;
+    // Render the Calendar
+    const renderCalendar = () => {
+        calendarGrid.innerHTML = '';
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+        monthYear.textContent = `${currentDate.toLocaleString('default', { month: 'long' })} ${year}`;
 
-        // Open Modal
-        const openModal = (day) => {
-            selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-            modalTitle.textContent = `Tasks for ${selectedDate.toDateString()}`;
-            taskModal.style.display = 'flex';
-            loadTasks();
-        };
-
-        // Close Modal
-        const closeModal = () => {
-            taskModal.style.display = 'none';
-        };
-
-        // Load Tasks for the Selected Date
-        const loadTasks = () => {
-            taskList.innerHTML = '';
-            const tasks = JSON.parse(localStorage.getItem(selectedDate.toDateString())) || [];
-
-            tasks.forEach((task, index) => {
-                const taskItem = document.createElement('li');
-                const taskName = document.createElement('span');
-                taskName.textContent = `${task.name} (${task.type})`;
-                taskName.classList.add('task-name');
-                const deleteButton = document.createElement('button');
-                deleteButton.textContent = 'Delete';
-                deleteButton.addEventListener('click', () => deleteTask(index));
-                taskItem.appendChild(taskName);
-                taskItem.appendChild(deleteButton);
-                taskList.appendChild(taskItem);
-            });
-        };
-
-        // Add Task to Calendar
-        const addTask = (event) => {
-            event.preventDefault();
-            const taskName = taskNameInput.value.trim();
-            const taskType = [...taskTypeInputs].find(input => input.checked).value;
-            if (taskName === '') return;
-            const tasks = JSON.parse(localStorage.getItem(selectedDate.toDateString())) || [];
-            tasks.push({ name: taskName, type: taskType });
-            localStorage.setItem(selectedDate.toDateString(), JSON.stringify(tasks));
-            loadTasks();
-            renderCalendar();
-            taskNameInput.value = '';
-        };
-
-        // Delete Task from Calendar
-        const deleteTask = (index) => {
-            const tasks = JSON.parse(localStorage.getItem(selectedDate.toDateString())) || [];
-            tasks.splice(index, 1);
-            localStorage.setItem(selectedDate.toDateString(), JSON.stringify(tasks));
-            loadTasks();
-            renderCalendar();
-        };
-
-        // Add Long-Term Task to To-Do List
-        const addTodoTask = (event) => {
-            event.preventDefault();
-            const todoTask = todoInput.value.trim();
-            if (todoTask === '') return;
-            const todoTasks = JSON.parse(localStorage.getItem('todoTasks')) || [];
-            todoTasks.push({ name: todoTask });
-            localStorage.setItem('todoTasks', JSON.stringify(todoTasks));
-            loadTodoTasks();
-            todoInput.value = '';
-        };
-
-        // Load To-Do List Tasks
-        const loadTodoTasks = () => {
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const today = new Date().getDate(); // Get today's day number
+        
+        for (let i = 0; i < firstDay; i++) {
+            const emptyCell = document.createElement('div');
+            emptyCell.classList.add('calendar-cell', 'inactive');
+            calendarGrid.appendChild(emptyCell);
+        }
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dayCell = document.createElement('div');
+            dayCell.classList.add('calendar-cell');
+            dayCell.textContent = day;
+            // Check if the day is today and add a special class
+            if (day === today && currentDate.getMonth() === new Date().getMonth() && currentDate.getFullYear() === new Date().getFullYear()) {
+                dayCell.classList.add('today'); // Add 'today' class for the current day
+            }
+            const taskDate = new Date(year, month, day).toDateString();
+            const tasks = JSON.parse(localStorage.getItem(taskDate)) || [];
+            if (tasks.length > 0) {
+                const indicator = document.createElement('div');
+                indicator.classList.add('task-indicator');
+                let hasNormalTask = false;
+                let hasDayTask = false;
+                tasks.forEach(task => {
+                    if (task.type === 'normal') hasNormalTask = true;
+                    if (task.type === 'day') hasDayTask = true;
+                });
+                if (hasNormalTask) {
+                    const normalDot = document.createElement('span');
+                    normalDot.classList.add('normal');
+                    indicator.appendChild(normalDot);
+                    dayCell.classList.add('task-day-normal');
+                }
+                if (hasDayTask) {
+                    const dayDot = document.createElement('span');
+                    dayDot.classList.add('day');
+                    indicator.appendChild(dayDot);
+                    dayCell.classList.add('task-day-day');
+                }
+                dayCell.appendChild(indicator);
+            }
+            dayCell.addEventListener('click', () => openModal(day));
+            calendarGrid.appendChild(dayCell);
+        }
+    };
+    // Open Modal
+    const openModal = (day) => {
+        selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+        modalTitle.textContent = `Tasks for ${selectedDate.toDateString()}`;
+        taskModal.style.display = 'flex';
+        // Triggering modal fade-in effect
+        setTimeout(() => {
+            taskModal.classList.add('show');
+        }, 10);
+    
+        loadTasks();
+    };
+    // Close Modal
+    const closeModal = () => {
+        taskModal.style.display = 'none';
+    };
+    // Open Task Modal
+    const openTaskModal = (day) => {
+        const selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+        loadTasks(selectedDate);
+    };
+    // Load Tasks for the Selected Date
+    // Load Tasks for the Selected Date
+    const loadTasks = async () => {
+        taskList.innerHTML = '';
+        const response = await fetch(`/api/calendar-tasks/?date=${selectedDate.toISOString().split('T')[0]}`);
+        const tasks = await response.json();
+    
+        tasks.forEach((task, index) => {
+            const taskItem = document.createElement('li');
+            const taskIndicator = document.createElement('div');
+            taskIndicator.classList.add('model_task-indicator');
+            taskIndicator.style.backgroundColor = task.task_type === 'normal' ? '#2196f3' : '#fb8c00';
+            const taskName = document.createElement('span');
+            taskName.textContent = task.name;
+            taskName.classList.add('task-name');
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete';
+            deleteButton.addEventListener('click', () => deleteTask(task.id));
+            taskItem.appendChild(taskIndicator);
+            taskItem.appendChild(taskName);
+            taskItem.appendChild(deleteButton);
+            taskList.appendChild(taskItem);
+        });
+    };
+    // Add Task to Calendar
+    const addTask = async (event) => {
+        event.preventDefault();
+        const taskName = taskNameInput.value.trim();
+        const taskType = document.querySelector('input[name="taskType"]:checked').value;
+        if (!taskName) return;
+        await fetch('/api/calendar-tasks/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                date: selectedDate.toISOString().split('T')[0],
+                name: taskName,
+                task_type: taskType,
+                priority: 'important',
+            }),
+        });
+        loadTasks(selectedDate);
+        renderCalendar();
+        loadConsolidatedTasks();
+        // taskNameInput.value = '';
+    };
+    // Delete Task from Calendar
+    const deleteTask = async (index) => {
+        await fetch(`/api/calendar-tasks/${taskId}/`, { method: 'DELETE' });
+        loadTasks(selectedDate);
+        renderCalendar();
+        loadConsolidatedTasks();
+    };
+    // Load To-Do List Tasks
+    const loadTodoTasks = async () => {
+        try {
+            // Clear the existing list
             todoList.innerHTML = '';
-            const todoTasks = JSON.parse(localStorage.getItem('todoTasks')) || [];
-            todoTasks.forEach((task, index) => {
+            // Fetch tasks from the API
+            const response = await fetch('/api/todo-tasks/');
+            if (!response.ok) throw new Error('Failed to load tasks');
+            const tasks = await response.json();
+            // Add tasks to the DOM
+            tasks.forEach((task) => {
+                // Create list item for each task
                 const taskItem = document.createElement('li');
-                taskItem.textContent = task.name;
+                taskItem.textContent = task.task_name;
+                // Create delete button
                 const deleteButton = document.createElement('button');
                 deleteButton.textContent = 'Delete';
-                deleteButton.addEventListener('click', () => deleteTodoTask(index));
+                deleteButton.addEventListener('click', () => deleteTodoTask(task.id));
+                // Append delete button to task item
                 taskItem.appendChild(deleteButton);
+                // Append task item to the list
                 todoList.appendChild(taskItem);
             });
-        };
-
-        // Delete Long-Term Task from To-Do List
-        const deleteTodoTask = (index) => {
-            const todoTasks = JSON.parse(localStorage.getItem('todoTasks')) || [];
-            todoTasks.splice(index, 1);
-            localStorage.setItem('todoTasks', JSON.stringify(todoTasks));
-            loadTodoTasks();
-        };
-
-        // Load Consolidated Tasks
-        const loadConsolidatedTasks = () => {
-            consolidatedTaskList.innerHTML = '';
-            const tasks = [];
-            const todoTasks = JSON.parse(localStorage.getItem('todoTasks')) || [];
-            todoTasks.forEach(task => tasks.push({ ...task, date: 'Long-Term' }));
-
-            Object.keys(localStorage).forEach(key => {
-                if (new Date(key).toString() !== 'Invalid Date') {
-                    const dateTasks = JSON.parse(localStorage.getItem(key));
-                    dateTasks.forEach(task => {
-                        tasks.push({ name: task.name, date: key });
-                    });
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    // Add To-Do task
+    const addTodoTask = async (event) => {
+        event.preventDefault();
+        const todoTask = todoInput.value.trim();
+        if (!todoTask) return;
+        await fetch('/api/todo-tasks/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken, // Include CSRF token
+            },
+            body: JSON.stringify({ task_name: todoTask }),
+        });
+        loadTodoTasks();
+        todoInput.value = '';
+    };
+    // Delete Long-Term Task from To-Do List
+    const deleteTodoTask = async (taskId) => {
+        await fetch(`/api/todo-tasks/${taskId}/`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': csrftoken,
+            },
+        });
+        loadTodoTasks();
+    };
+    // Render the Consolidated Tasks
+    const loadConsolidatedTasks = () => {
+        consolidatedTaskList.innerHTML = '';
+        const tasks = [];
+        // Load long-term tasks from the special 'todoListTasks' key
+        const longTermTasks = JSON.parse(localStorage.getItem('longTermTasks')) || [];  // This is for calendar-based tasks
+        longTermTasks.forEach(task => tasks.push({ ...task, date: 'Long-Term' }));
+        // Load tasks from calendar-based keys (i.e., by date)
+        Object.keys(localStorage).forEach(key => {
+            if (new Date(key).toString() !== 'Invalid Date' && key !== 'todoListTasks') {  // Exclude 'todoListTasks'
+                const dateTasks = JSON.parse(localStorage.getItem(key));
+                dateTasks.forEach(task => {
+                    tasks.push({ name: task.name, date: key, priority: task.priority || 'important' });
+                });
+            }
+        });
+        tasks.forEach(task => {
+            const taskItem = document.createElement('li');
+            taskItem.classList.add('consolidated-task-item', task.priority);
+            // Task Name
+            const taskName = document.createElement('span');
+            taskName.textContent = task.name;
+            taskName.classList.add('consolidated-task-name');
+            // Task Date
+            const taskDate = document.createElement('span');
+            taskDate.textContent = task.date;
+            taskDate.classList.add('consolidated-task-date');
+            // Priority Menu
+            const priorityMenu = document.createElement('div');
+            priorityMenu.classList.add('priority-menu');
+            const priorities = ['highly-important', 'medium-important', 'important'];
+            priorities.forEach(priority => {
+                const option = document.createElement('div');
+                option.classList.add('priority-option');
+                option.textContent = priority.replace('-', ' ').toUpperCase();
+                option.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent bubbling to task click
+                    setPriority(task, priority); // Update priority
+                    closePriorityMenu(); // Close the menu
+                });
+                priorityMenu.appendChild(option);
+            });
+            // Append elements to the task item
+            taskItem.appendChild(taskName);
+            taskItem.appendChild(taskDate);
+            taskItem.appendChild(priorityMenu);
+            // Event listener for task selection and menu toggle
+            taskItem.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleTaskSelection(taskItem); // Highlight the task
+                togglePriorityMenu(taskItem, priorityMenu); // Show the priority menu
+            });
+            consolidatedTaskList.appendChild(taskItem);
+        });
+        // Close all open menus when clicking outside
+        document.addEventListener('click', () => {
+            closePriorityMenu();
+        });
+    };
+    
+    // Toggle the visibility of the priority menu
+    function togglePriorityMenu(taskItem, priorityMenu) {
+        const allMenus = document.querySelectorAll('.priority-menu');
+        allMenus.forEach(menu => {
+            if (menu !== priorityMenu) {
+                menu.style.display = 'none';
+            }
+        });
+        priorityMenu.style.display = priorityMenu.style.display === 'block' ? 'none' : 'block';
+    }
+    
+    // Update the task's priority in localStorage
+    function setPriority(task, priority) {
+        if (task.date === 'Long-Term') {
+            // Update priority for long-term tasks
+            const longTermTasks = JSON.parse(localStorage.getItem('longTermTasks')) || [];
+            const updatedTasks = longTermTasks.map(t => {
+                if (t.name === task.name) {
+                    t.priority = priority;
                 }
+                return t;
             });
-
-            tasks.forEach(task => {
-                const taskItem = document.createElement('li');
-                taskItem.textContent = `${task.name} - ${task.date}`;
-                consolidatedTaskList.appendChild(taskItem);
+            localStorage.setItem('longTermTasks', JSON.stringify(updatedTasks));
+        } else {
+            // Update priority for day-wise tasks
+            const tasks = JSON.parse(localStorage.getItem(task.date)) || [];
+            const updatedTasks = tasks.map(t => {
+                if (t.name === task.name) {
+                    t.priority = priority;
+                }
+                return t;
             });
-        };
-
-        // Event Listeners
-        taskForm.addEventListener('submit', addTask);
-        todoForm.addEventListener('submit', addTodoTask);
-        document.getElementById('prevMonth').addEventListener('click', () => {
-            currentDate.setMonth(currentDate.getMonth() - 1);
-            renderCalendar();
+            localStorage.setItem(task.date, JSON.stringify(updatedTasks));
+        }
+    
+        // Refresh the task list to reflect changes
+        loadConsolidatedTasks();
+    }
+    
+    // Close all priority menus
+    function closePriorityMenu() {
+        const openMenus = document.querySelectorAll('.priority-menu');
+        openMenus.forEach(menu => {
+            menu.style.display = 'none';
         });
-        document.getElementById('nextMonth').addEventListener('click', () => {
-            currentDate.setMonth(currentDate.getMonth() + 1);
-            renderCalendar();
+    }
+    
+    // Highlight the selected task
+    function toggleTaskSelection(taskItem) {
+        const allTasks = document.querySelectorAll('.consolidated-task-item');
+        allTasks.forEach(task => {
+            task.classList.remove('selected');
         });
-
-        // Initial Render
+        taskItem.classList.add('selected');
+    }
+    
+    // Remove the glow effect when clicking outside a task
+    document.addEventListener('click', (e) => {
+        const isTaskClicked = e.target.closest('.consolidated-task-item');
+        if (!isTaskClicked) {
+            const allTasks = document.querySelectorAll('.consolidated-task-item');
+            allTasks.forEach(task => {
+                task.classList.remove('selected'); // Remove the selected class from all tasks
+            });
+        }
+    });
+    // Event listener for task clicks
+    const taskItems = document.querySelectorAll('.consolidated-task-item');
+    taskItems.forEach(taskItem => {
+        taskItem.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent event bubbling
+            toggleTaskSelection(taskItem); // Highlight the clicked task
+            togglePriorityMenu(taskItem, taskItem.querySelector('.priority-menu')); // Show the priority menu
+        });
+    });
+    // Event Listeners
+    taskForm.addEventListener('submit', addTask);
+    todoForm.addEventListener('submit', addTodoTask);
+    document.getElementById('prevMonth').addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        renderCalendar();
+    });
+    document.getElementById('nextMonth').addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        renderCalendar();
+    });
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
         renderCalendar();
         loadTodoTasks();
         loadConsolidatedTasks();
-    </script>
-</body>
-</html>
+    });
+</script>
