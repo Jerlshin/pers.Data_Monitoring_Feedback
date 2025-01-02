@@ -35,8 +35,6 @@ class UserInput(models.Model):
     loved_someone = models.CharField(max_length=100, help_text="Name of someone you loved today.")
     daily_summary = models.TextField(max_length=500, help_text="A short summary of your day.")
     
-    loved_someone = models.CharField(max_length=100)
-    daily_summary = models.TextField(max_length=500)
 
     def __str__(self):
         """Return a string representation of the object."""

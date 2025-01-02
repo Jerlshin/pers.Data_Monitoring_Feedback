@@ -27,7 +27,9 @@
         <div class="bottom-container">
             <!-- To-Do List -->
             <div class="todo-container">
-                <h3>To-Do List </h3>
+                <div class="todo-header">
+                    <h3>To-Do List </h3>
+                </div>
                 <form id="todoForm">
                     <input type="text" id="todoInput" placeholder="Enter long-term task..." required>
                     <button type="submit">Add To-Do List</button>
@@ -37,11 +39,16 @@
 
             <!-- Consolidated Tasks -->
             <div class="consolidated-container">
-                <h3>Consolidated Tasks</h3>
+                <div class="consolidated-header">
+                    <h3>Consolidated Tasks</h3>
+                </div>
                 <ul id="consolidatedTaskList" class="task-list"></ul>
             </div>
         </div>
     </div>
+
+
+
     <!-- Modal for Task Input -->
     <div class="modal" id="taskModal">
         <div class="modal-content">
@@ -280,7 +287,7 @@
             }
         };
 
-
+        
         /**
         * Deletes a task for the selected date.
         * @param {number} index - The index of the task to delete.
@@ -391,6 +398,7 @@
             } 
         };
 
+        
         /**
         * Deletes a long-term task from the to-do list.
         * @param {number} index - The index of the task to delete.
@@ -418,73 +426,125 @@
             }
         };
 
-        // Function to render the consolidated task list
-        const loadConsolidatedTasks = () => {
+        const loadConsolidatedTasks = async () => {
             consolidatedTaskList.innerHTML = ''; // Clear existing tasks
             const tasks = []; // Array to hold all tasks
-
-            // Load long-term tasks from the special 'longTermTasks' key
-            const longTermTasks = JSON.parse(localStorage.getItem('longTermTasks')) || [];
-            longTermTasks.forEach(task => tasks.push({ ...task, date: 'Long-Term' })); // Add long-term tasks with a fixed date label
-
-            // Load tasks stored by calendar dates
-            Object.keys(localStorage).forEach(key => {
-                // Check if the key is a valid date and exclude the 'todoListTasks' key
-                if (new Date(key).toString() !== 'Invalid Date' && key !== 'todoListTasks') {
-                    const dateTasks = JSON.parse(localStorage.getItem(key));
-                    dateTasks.forEach(task => {
-                        tasks.push({ name: task.name, date: key, priority: task.priority || 'important' }); // Add date-specific tasks
+        
+            try {
+                // Fetch date-specific tasks
+                const calendarResponse = await fetch('/api/calendar-tasks/');
+                if (calendarResponse.ok) {
+                    const calendarTasks = await calendarResponse.json();        
+                    calendarTasks.forEach(task => {
+                        tasks.push({
+                            id: task.id, // Include the task ID
+                            name: task.name,
+                            date: task.date,
+                            priority: task.priority || 'important' // Default priority
+                        });
                     });
+                } else {
+                    console.error("Failed to fetch calendar tasks:", calendarResponse.statusText);
                 }
-            });
+        
+                // Render each task in the consolidated task list
+                tasks.forEach(task => {
+                    const taskItem = document.createElement('li'); // Create task item
+                    taskItem.classList.add('consolidated-task-item', task.priority); // Add classes based on priority
+                    taskItem.setAttribute('data-task-id', task.id); // Add task ID to the task item
 
-            // Render each task in the consolidated task list
-            tasks.forEach(task => {
-                const taskItem = document.createElement('li'); // Create task item
-                taskItem.classList.add('consolidated-task-item', task.priority); // Add classes based on priority
-
-                // Create and append task name
-                const taskName = document.createElement('span');
-                taskName.textContent = task.name;
-                taskName.classList.add('consolidated-task-name');
-                taskItem.appendChild(taskName);
-
-                // Create and append task date
-                const taskDate = document.createElement('span');
-                taskDate.textContent = task.date;
-                taskDate.classList.add('consolidated-task-date');
-                taskItem.appendChild(taskDate);
-
-                // Create priority menu and append options
-                const priorityMenu = document.createElement('div');
-                priorityMenu.classList.add('priority-menu');
-                ['highly-important', 'medium-important', 'important'].forEach(priority => {
-                    const option = document.createElement('div');
-                    option.classList.add('priority-option');
-                    option.textContent = priority.replace('-', ' ').toUpperCase();
-                    option.addEventListener('click', (e) => {
-                        e.stopPropagation(); // Prevent event bubbling
-                        setPriority(task, priority); // Update task priority
-                        closePriorityMenu(); // Close the menu
+                    // Create and append task name
+                    const taskName = document.createElement('span');
+                    taskName.textContent = task.name;
+                    taskName.classList.add('consolidated-task-name');
+                    taskItem.appendChild(taskName);
+        
+                    // Create and append task date
+                    const taskDate = document.createElement('span');
+                    taskDate.textContent = task.date;
+                    taskDate.classList.add('consolidated-task-date');
+                    taskItem.appendChild(taskDate);
+        
+                    // Create priority menu and append options
+                    const priorityMenu = document.createElement('div');
+                    priorityMenu.classList.add('priority-menu');
+                    
+                    ['high', 'medium', 'important'].forEach(priority => {
+                        const option = document.createElement('div');
+                        option.classList.add('priority-option');
+                        option.textContent = priority.replace('-', ' ').toUpperCase();
+                        option.addEventListener('click', async (e) => {
+                            e.stopPropagation(); // Prevent event bubbling
+                            await setPriority(task, priority); // Update task priority
+                            closePriorityMenu(); // Close the menu
+                        });
+                        priorityMenu.appendChild(option);
                     });
-                    priorityMenu.appendChild(option);
+                    taskItem.appendChild(priorityMenu);
+        
+                    // Add event listener for task selection and menu toggle
+                    taskItem.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        toggleTaskSelection(taskItem); // Highlight the task
+                        togglePriorityMenu(taskItem, priorityMenu); // Show the priority menu
+                    });
+        
+                    // Append task item to the consolidated task list
+                    consolidatedTaskList.appendChild(taskItem);
                 });
-                taskItem.appendChild(priorityMenu);
-
-                // Add event listener for task selection and menu toggle
-                taskItem.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    toggleTaskSelection(taskItem); // Highlight the task
-                    togglePriorityMenu(taskItem, priorityMenu); // Show the priority menu
-                });
-
-                // Append task item to the consolidated task list
-                consolidatedTaskList.appendChild(taskItem);
-            });
-
-            // Close all open menus when clicking outside
-            document.addEventListener('click', closePriorityMenu);
+        
+                // Close all open menus when clicking outside
+                document.addEventListener('click', closePriorityMenu);
+        
+            } catch (error) {
+                console.error("Error loading consolidated tasks:", error);
+            }
         };
+        // Update the task's priority in calendar tasks
+        async function setPriority(task, priority) {
+            if (!task.id) {
+                console.error("Task ID is undefined. Cannot update priority.");
+                return;
+            }
+
+            try {
+                // Send a PATCH request to update the task's priority in the backend
+                const response = await fetch(`/api/calendar-tasks/${task.id}/`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: JSON.stringify({ priority }) // Include the updated priority in the request body
+                });
+
+                if (response.ok) {
+                    // Task priority successfully updated on the server
+                    console.log("Task priority updated successfully!");
+
+                    // Locate the corresponding task item in the DOM using its ID
+                    const taskItem = document.querySelector(`[data-task-id="${task.id}"]`);
+
+                    if (taskItem) {
+                        // Remove any old priority classes
+                        taskItem.classList.remove('high', 'medium', 'important');
+
+                        // Add the new priority class to apply updated styles
+                        taskItem.classList.add(priority);
+                    } else {
+                        console.error(`Task element with ID ${task.id} not found in DOM.`);
+                    }
+                } else {
+                    // Handle server-side errors gracefully
+                    const errorData = await response.json();
+                    console.error("Failed to update task priority:", errorData);
+                }
+            } catch (error) {
+                // Log client-side errors for debugging purposes
+                console.error("Error updating task priority:", error);
+            }
+        }
+
 
         // Toggle the visibility of the priority menu
         function togglePriorityMenu(taskItem, priorityMenu) {
@@ -496,23 +556,8 @@
             });
             priorityMenu.style.display = priorityMenu.style.display === 'block' ? 'none' : 'block'; // Toggle current menu
         }
+        
 
-        // Update the task's priority in localStorage
-        function setPriority(task, priority) {
-            if (task.date === 'Long-Term') {
-                // Update priority for long-term tasks
-                const longTermTasks = JSON.parse(localStorage.getItem('longTermTasks')) || [];
-                const updatedTasks = longTermTasks.map(t => t.name === task.name ? { ...t, priority } : t);
-                localStorage.setItem('longTermTasks', JSON.stringify(updatedTasks));
-            } else {
-                // Update priority for date-specific tasks
-                const tasks = JSON.parse(localStorage.getItem(task.date)) || [];
-                const updatedTasks = tasks.map(t => t.name === task.name ? { ...t, priority } : t);
-                localStorage.setItem(task.date, JSON.stringify(updatedTasks));
-            }
-
-            loadConsolidatedTasks(); // Refresh the task list to reflect changes
-        }
 
         // Close all open priority menus
         function closePriorityMenu() {
